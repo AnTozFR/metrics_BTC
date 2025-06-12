@@ -20,6 +20,7 @@ def get_metrics():
 
         altbg = yf.Ticker("ALTBG.PA")
         altbg_price = altbg.info.get("currentPrice", 0)
+        market_cap = altbg.info.get("marketCap", 0)
 
         # NAV & mNAV
         btc_nav = btc_price * btc_held
@@ -41,11 +42,21 @@ def get_metrics():
         months_to_cover_mnav_yield_linear = mn_nav / yield_monthly_pct if mn_nav and yield_monthly_pct else None
         days_to_cover_mnav_yield_linear = months_to_cover_mnav_yield_linear * 30 if months_to_cover_mnav_yield_linear else None
 
+        btc_hist = btc.history(period="2d")["Close"]
+        btc_change_pct = ((btc_hist.iloc[-1] - btc_hist.iloc[-2]) / btc_hist.iloc[-2]) * 100 if len(btc_hist) >= 2 else None
+
+        altbg_hist = altbg.history(period="2d")["Close"]
+        altbg_change_pct = ((altbg_hist.iloc[-1] - altbg_hist.iloc[-2]) / altbg_hist.iloc[-2]) * 100 if len(altbg_hist) >= 2 else None
+
+        mn_nav_yesterday = (shares_fully_diluted * altbg_hist.iloc[-2]) / (btc_hist.iloc[-2] * btc_held) if len(altbg_hist) >= 2 and len(btc_hist) >= 2 else None
+        mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
+
         return jsonify({
             "btc_price": round(btc_price, 2),
             "btc_held": btc_held,
             "btc_nav": round(btc_nav, 2),
             "altbg_price": round(altbg_price, 2),
+            "market_cap": round(market_cap, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "diluted_share": shares_fully_diluted,
             "mn_nav": round(mn_nav, 3) if mn_nav else None,
@@ -54,7 +65,10 @@ def get_metrics():
             "yield_daily_pct": round(yield_daily_pct * 100, 3) if yield_daily_pct else None,  # En %
             "yield_monthly_pct": round(yield_monthly_pct * 100, 1) if yield_monthly_pct else None,  # En %
             "months_to_cover_mnav_yield_linear": round(months_to_cover_mnav_yield_linear, 2) if months_to_cover_mnav_yield_linear else None,
-            "days_to_cover_mnav_yield_linear": round(days_to_cover_mnav_yield_linear, 1) if days_to_cover_mnav_yield_linear else None
+            "days_to_cover_mnav_yield_linear": round(days_to_cover_mnav_yield_linear, 1) if days_to_cover_mnav_yield_linear else None,
+            "btc_price_change_pct": round(btc_change_pct, 2) if btc_change_pct is not None else None,
+            "altbg_price_change_pct": round(altbg_change_pct, 2) if altbg_change_pct is not None else None,
+            "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct is not None else None,
         })
 
     except Exception as e:
