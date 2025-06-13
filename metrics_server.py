@@ -9,7 +9,7 @@ CORS(app)
 @app.route('/api/metrics')
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 311_726_634
+    shares_fully_diluted = 304_953_371
     btc_held = 1471
     btc_yield_ytd = 1097.6  # soit +1097% sur l'année
 
@@ -51,6 +51,29 @@ def get_metrics():
         mn_nav_yesterday = (shares_fully_diluted * altbg_hist.iloc[-2]) / (btc_hist.iloc[-2] * btc_held) if len(altbg_hist) >= 2 and len(btc_hist) >= 2 else None
         mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
 
+                # ---- CALCUL DE LA PCV ----
+
+        # Nombre de mois entiers écoulés depuis le début de l'année
+        start_of_year = datetime(datetime.today().year, 1, 1)
+        today = datetime.today()
+        months_elapsed = (today.year - start_of_year.year) * 12 + (today.month - start_of_year.month)
+
+        # BTC yield multiplicatif mensuel (en proportion, pas en %)
+        btc_yield_monthly_mult = 1 + ((btc_yield_ytd / months_elapsed) / 100) if months_elapsed else None
+
+        # MmC = mNAV / BTC_yield_monthly_mult
+        mmc = mn_nav / btc_yield_monthly_mult if mn_nav and btc_yield_monthly_mult else None
+
+        # PCV = (mNAV - 1) / MmC
+        pcv = (mn_nav - 1) / mmc if mn_nav and mmc else None
+
+        # ---- CALCUL DE LA VARIATION DE LA PCV ----
+        btc_yield_monthly_mult_yesterday = 1 + ((btc_yield_ytd / months_elapsed) / 100) if months_elapsed else None
+        mmc_yesterday = mn_nav_yesterday / btc_yield_monthly_mult_yesterday if mn_nav_yesterday and btc_yield_monthly_mult_yesterday else None
+        pcv_yesterday = (mn_nav_yesterday - 1) / mmc_yesterday if mn_nav_yesterday and mmc_yesterday else None
+
+        pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
+
         return jsonify({
             "btc_price": round(btc_price, 2),
             "btc_held": btc_held,
@@ -69,6 +92,8 @@ def get_metrics():
             "btc_price_change_pct": round(btc_change_pct, 2) if btc_change_pct is not None else None,
             "altbg_price_change_pct": round(altbg_change_pct, 2) if altbg_change_pct is not None else None,
             "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct is not None else None,
+            "pcv": round(pcv, 3) if pcv else None,
+            "pcv_change_pct": round(pcv_change_pct, 2) if pcv_change_pct else None,
         })
 
     except Exception as e:
