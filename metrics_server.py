@@ -10,9 +10,9 @@ CORS(app)
 @app.route('/api/metrics')
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 299_355_400
-    btc_held = 1471
-    btc_yield_ytd = 1097.6  # +1097% sur l'année
+    shares_fully_diluted = 316_207_689
+    btc_held = 1653
+    btc_yield_ytd = 1173.2  # +1097% sur l'année
 
     try:
         # Données live
