@@ -11,8 +11,8 @@ CORS(app)
 def get_metrics():
     # Données fixes
     shares_fully_diluted = 316_207_689
-    btc_held = 1653
-    btc_yield_ytd = 1173.2  # +1097% sur l'année
+    btc_held = 1728
+    btc_yield_ytd = 1231.7
 
     try:
         # Données live
