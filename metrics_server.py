@@ -15,7 +15,7 @@ def mtplf():
     return get_mtplf_metrics()
 
 @app.route("/mstr")
-def mtplf():
+def mstr():
     return get_mstr_metrics()
 
 if __name__ == '__main__':
