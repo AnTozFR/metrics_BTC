@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from metrics_ALTBG import get_altbg_metrics
-from metrics_MTPLF import get_mtplf_metrics  # Assure-toi que celle-ci existe aussi
+from metrics_MSTR import get_mstr_metrics
+from metrics_MTPLF import get_mtplf_metrics
 
 app = Flask(__name__)
 CORS(app)
