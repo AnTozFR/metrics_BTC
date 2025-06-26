@@ -40,7 +40,7 @@ def get_metrics():
         months_to_cover = days_to_cover / 30 if days_to_cover else None
 
         # Début du programme
-        start_date = datetime.strptime("2024-12-11", "%Y-%m-%d")
+        start_date = datetime.strptime("2024-04-08", "%Y-%m-%d")
         days_since_start = (datetime.today() - start_date).days
 
         # Vitesse d'accumulation linéaire
