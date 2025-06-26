@@ -4,6 +4,7 @@ import yfinance as yf
 from datetime import datetime
 import math
 
+def get_metrics():
     shares_fully_diluted = 312_903_000
     btc_held = 592345
     btc_yield_ytd = 19.2
