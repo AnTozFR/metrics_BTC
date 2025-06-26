@@ -102,3 +102,6 @@ def get_metrics():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+def get_mtplf_metrics():
+    return get_metrics()
