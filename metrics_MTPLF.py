@@ -21,7 +21,16 @@ def get_metrics():
 
         mtplf = yf.Ticker("DN3.F")
         mtplf_price = mtplf.info.get("currentPrice", 0)
-        market_cap = mtplf.info.get("marketCap", 0)
+
+        mtplf_japan = yf.Ticker("3350.T")
+        market_cap_jpy = mtplf_japan.info.get("marketCap", 0)
+        
+        # Taux de change EUR/JPY
+        eur_jpy = yf.Ticker("EURJPY=X")
+        eur_jpy_rate = eur_jpy.history(period="1d")["Close"].iloc[-1]
+        
+        # Market cap convertie en euros
+        market_cap = market_cap_jpy / eur_jpy_rate if market_cap_jpy and eur_jpy_rate else None
 
         # NAV & mNAV
         btc_nav = btc_price * btc_held
