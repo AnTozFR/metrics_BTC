@@ -4,10 +4,6 @@ import yfinance as yf
 from datetime import datetime
 import math
 
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/api/metrics')
 def get_metrics():
     # Données fixes
     shares_fully_diluted = 759_067_925
@@ -106,10 +102,3 @@ def get_metrics():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-def get_mtplf_metrics():
-    with app.test_request_context():
-        return get_metrics()
-
-if __name__ == '__main__':
-    app.run(debug=True)
