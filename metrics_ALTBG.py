@@ -98,5 +98,9 @@ def get_metrics():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def get_altbg_metrics():
+    with app.test_request_context():
+        return get_metrics()
+
 if __name__ == '__main__':
     app.run(debug=True)
