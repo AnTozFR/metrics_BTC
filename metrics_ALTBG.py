@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 320_990_295
-    btc_held = 1933
-    btc_yield_ytd = 1368.3
+    shares_fully_diluted = 327_680_839
+    btc_held = 1955
+    btc_yield_ytd = 1372.2
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
@@ -20,7 +20,8 @@ def get_metrics():
     {"date": "2025-06-23", "btc": 75, "price": 91792},
     {"date": "2025-06-30", "btc": 60, "price": 91879},
     {"date": "2025-07-07", "btc": 116, "price": 92175},
-    {"date": "2025-07-14", "btc": 29, "price": 95225}
+    {"date": "2025-07-14", "btc": 29, "price": 95225},
+    {"date": "2025-07-21", "btc": 22, "price": 101112}
     ]
 
     fundraising_data = [
@@ -40,6 +41,8 @@ def get_metrics():
         {"date": "2025-07-08", "type": "ATM Type", "detail": "TOBAM (4.056€/share) - ATM Type #4", "montant": 3},
         {"date": "2025-07-15", "type": "ATM Type", "detail": "TOBAM (3.95€/share) - ATM Type #5", "montant": 1.1},
         {"date": "2025-07-15", "type": "Reserved capital increase", "detail": "Adam Back (4.01€/share)", "montant": 5},
+        {"date": "2025-07-21", "type": "ATM Type", "detail": "TOBAM (4.1039€/share)  - ATM Type #6", "montant": 1.6},
+        {"date": "2025-07-21", "type": "Reserved capital increase", "detail": "Peak Hodl Ltd (3.4693€/share)", "montant": 8.7}
     ]
 
     capital_data = {
@@ -47,18 +50,20 @@ def get_metrics():
             "Fulgur Ventures",
             "Public & Institutional",
             "Adam Back",
-            "Executives",
+            "Dirigeants",
             "TOBAM",
             "UTXO Management",
-            "Free Shares"
+            "Peak Hodl Ltd",
+            "Actions gratuites"
         ],
         "values": [
             145_911_009,
-            100_975_068,
-            35_163_699,
+            103_249_822,
+            36_412_138,
             18_418_953,
-            10_642_356,
+            12_309_707,
             7_999_210,
+            2_500_000,
             1_880_000
         ]
     }
