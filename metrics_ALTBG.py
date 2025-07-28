@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 324_795_689
-    btc_held = 1955
-    btc_yield_ytd = 1372.2
+    shares_fully_diluted = 327_680_839
+    btc_held = 2013
+    btc_yield_ytd = 1409.9
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
