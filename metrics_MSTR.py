@@ -5,9 +5,9 @@ from datetime import datetime
 import math
 
 def get_metrics():
-    shares_fully_diluted = 316_705_000
-    btc_held = 607770
-    btc_yield_ytd = 20.8
+    shares_fully_diluted = 316_747_000
+    btc_held = 628791
+    btc_yield_ytd = 25
 
     try:
         # Données live
@@ -95,3 +95,4 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
