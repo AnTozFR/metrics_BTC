@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 327_680_839
-    btc_held = 2013
-    btc_yield_ytd = 1409.9
+    shares_fully_diluted = 331_180_647
+    btc_held = 2075
+    btc_yield_ytd = 1446.3
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
@@ -175,3 +175,4 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
