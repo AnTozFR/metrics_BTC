@@ -76,7 +76,7 @@ def get_metrics():
         btc = yf.Ticker("BTC-EUR")
         btc_price = btc.history(period="1d")["Close"].iloc[-1]
 
-        altbg = yf.Ticker("ALTBG.PA")
+        altbg = yf.Ticker("ALCPB.PA")
         altbg_price = altbg.info.get("currentPrice", 0)
         market_cap = altbg.info.get("marketCap", 0)
 
@@ -177,6 +177,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
