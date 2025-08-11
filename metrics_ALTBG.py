@@ -64,7 +64,7 @@ def get_metrics():
             103_249_822,
             36_412_138,
             18_418_953,
-            11_309_707,
+            14_809_515,
             7_999_210,
             2_500_000,
             1_880_000
@@ -177,6 +177,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
