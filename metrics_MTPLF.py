@@ -141,7 +141,7 @@ def get_metrics():
             "btc_yield_ytd": btc_yield_ytd,
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
-            "mtplf_price": round(mtplfprice, 2),
+            "mtplf_price": round(mtplf_price, 2),
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
@@ -170,3 +170,4 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
