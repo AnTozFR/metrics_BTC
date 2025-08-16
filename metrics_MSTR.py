@@ -5,6 +5,7 @@ from datetime import datetime
 import math
 
 def get_metrics():
+    # Données fixes
     shares_fully_diluted = 316_710_000
     btc_held = 628946
     btc_yield_ytd = 25
@@ -35,7 +36,7 @@ def get_metrics():
         months_to_cover = days_to_cover / 30 if days_to_cover else None
 
         # Début du programme
-        start_date = datetime.strptime("2020-08-11", "%Y-%m-%d")
+        start_date = datetime.strptime("2020-08-10", "%Y-%m-%d")
         days_since_start = (datetime.today() - start_date).days
 
         # Vitesse d'accumulation linéaire
@@ -67,6 +68,17 @@ def get_metrics():
         pcv_yesterday = (mn_nav_yesterday - 1) / months_to_cover if mn_nav_yesterday and months_to_cover else None
         pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
 
+        btc_per_share = btc_held / shares_fully_diluted if shares_fully_diluted else None
+
+        satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
+
+        btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None else None
+
+        invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
+
+        btc_gain = btc_nav - invest_price
+
+        btc_torque = btc_nav / invest_price
 
         return jsonify({
             "btc_held": btc_held,
@@ -87,13 +99,20 @@ def get_metrics():
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "mstr_price_change_pct": round(mstr_price_change_pct, 2) if mstr_price_change_pct else None,
             "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct else None,
-            "shares_fully_diluted": shares_fully_diluted
+            "shares_fully_diluted": shares_fully_diluted,
+            "btc_history": btc_history,
+            "fundraising_data": fundraising_data,
+            "capital_data": capital_data,
+            "btc_per_share": btc_per_share,
+            "satoshi_per_share": satoshi_per_share,
+            "btc_value_per_share_eur": btc_value_per_share_eur,
+            "invest_price": round(invest_price, 2),
+            "btc_gain": round(btc_gain, 2),
+            "btc_torque": btc_torque,
         })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 def get_mstr_metrics():
-    return get_metrics()
-
-
+return get_metrics()
