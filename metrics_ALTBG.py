@@ -177,8 +177,3 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
-
-
-
-
-
