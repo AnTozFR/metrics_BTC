@@ -192,7 +192,3 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
-
-
-
-
