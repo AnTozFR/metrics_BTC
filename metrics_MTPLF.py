@@ -7,8 +7,8 @@ import math
 def get_metrics():
     # Données fixes
     shares_fully_diluted = 865_942_925
-    btc_held = 17595
-    btc_yield_ytd = 459.2
+    btc_held = 18113
+    btc_yield_ytd = 460.2
 
     try:
         # Données live
@@ -105,4 +105,5 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
