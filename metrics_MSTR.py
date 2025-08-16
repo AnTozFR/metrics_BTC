@@ -84,7 +84,7 @@ def get_metrics():
     {"date": "2025-07-14", "btc": 4225,  "price": 111827},
     {"date": "2025-07-21", "btc": 6220,  "price": 118940},
     {"date": "2025-07-29", "btc": 21021, "price": 117256},
-    {"date": "2025-08-11", "btc": 155,   "price": 116401},
+    {"date": "2025-08-11", "btc": 155,   "price": 116401}
     ]
 
     try:
@@ -190,5 +190,3 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
-
-
