@@ -144,7 +144,6 @@ btc_history = [
         mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
 
         # PCV d’hier + variation
-        pcv = (mn_nav - 1) / months_to_cover if months_to_cover else None
         pcv_yesterday = (mn_nav_yesterday - 1) / months_to_cover if mn_nav_yesterday and months_to_cover else None
         pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
 
@@ -196,4 +195,5 @@ btc_history = [
 
 def get_mstr_metrics():
     return get_metrics()
+
 
