@@ -10,7 +10,7 @@ def get_metrics():
     btc_held = 628946
     btc_yield_ytd = 25
 
-btc_history = [
+    btc_history = [
     {"date": "2020-08-10", "btc": 21454, "price": 11652},
     {"date": "2020-09-14", "btc": 16796, "price": 10419},
     {"date": "2020-12-04", "btc": 2574,  "price": 19427},
@@ -85,7 +85,7 @@ btc_history = [
     {"date": "2025-07-21", "btc": 6220,  "price": 118940},
     {"date": "2025-07-29", "btc": 21021, "price": 117256},
     {"date": "2025-08-11", "btc": 155,   "price": 116401},
-]
+    ]
 
     try:
         # Données live
@@ -192,6 +192,7 @@ btc_history = [
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
