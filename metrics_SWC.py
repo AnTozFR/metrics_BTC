@@ -94,7 +94,7 @@ def get_metrics():
 
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
 
-        btc_value_per_share_usd = btc_per_share * btc_price if btc_per_share is not None else None
+        btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None else None
 
         invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
 
@@ -125,7 +125,7 @@ def get_metrics():
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
-            "btc_value_per_share_usd": btc_value_per_share_usd,
+            "btc_value_per_share_eur": btc_value_per_share_eur,
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
