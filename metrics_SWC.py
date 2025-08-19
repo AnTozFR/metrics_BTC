@@ -102,7 +102,6 @@ def get_metrics():
         invest_price_gbp = sum(entry["btc"] * entry["price"] for entry in btc_history)
         invest_price = invest_price_gbp * gbp_eur if gbp_eur else None
 
-
         btc_gain = btc_nav - invest_price
 
         btc_torque = btc_nav / invest_price
