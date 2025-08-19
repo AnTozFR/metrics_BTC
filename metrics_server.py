@@ -16,7 +16,7 @@ def mtplf():
     return get_mtplf_metrics()
 
 @app.route("/swc")
-def mtplf():
+def swc():
     return get_swc_metrics()
 
 @app.route("/mstr")
