@@ -3,6 +3,7 @@ from flask_cors import CORS
 from metrics_ALTBG import get_altbg_metrics
 from metrics_MSTR import get_mstr_metrics
 from metrics_MTPLF import get_mtplf_metrics
+from metrics_SWC import get_swc_metrics
 
 app = Flask(__name__)
 CORS(app)
