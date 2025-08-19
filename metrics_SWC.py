@@ -98,7 +98,10 @@ def get_metrics():
 
         btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None else None
 
-        invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
+        gbp_eur = yf.Ticker("GBPEUR=X").history(period="1d")["Close"].iloc[-1]
+        invest_price_gbp = sum(entry["btc"] * entry["price"] for entry in btc_history)
+        invest_price = invest_price_gbp * gbp_eur if gbp_eur else None
+
 
         btc_gain = btc_nav - invest_price
 
