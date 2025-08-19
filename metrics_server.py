@@ -15,6 +15,10 @@ def altbg():
 def mtplf():
     return get_mtplf_metrics()
 
+@app.route("/swc")
+def mtplf():
+    return get_swc_metrics()
+
 @app.route("/mstr")
 def mstr():
     return get_mstr_metrics()
