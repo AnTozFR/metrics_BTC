@@ -4,6 +4,7 @@ from metrics_ALTBG import get_altbg_metrics
 from metrics_MSTR import get_mstr_metrics
 from metrics_MTPLF import get_mtplf_metrics
 from metrics_SWC import get_swc_metrics
+from metrics_h100 import get_h100_metrics
 
 app = Flask(__name__)
 CORS(app)
@@ -23,6 +24,10 @@ def swc():
 @app.route("/mstr")
 def mstr():
     return get_mstr_metrics()
+
+@app.route("/h100")
+def h100():
+    return get_h100_metrics()
 
 if __name__ == '__main__':
     app.run(debug=True)
