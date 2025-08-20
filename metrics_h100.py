@@ -36,6 +36,7 @@ def get_metrics():
 
         h100 = yf.Ticker("GS9.F")
         h100_price = h100.info.get("currentPrice", 0)
+        market_cap = h100.info.get("marketCap", 0)
 
         # NAV & mNAV
         btc_nav = btc_price * btc_held
