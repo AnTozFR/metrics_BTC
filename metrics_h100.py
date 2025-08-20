@@ -114,7 +114,7 @@ def get_metrics():
             "h100_price": round(h100_price, 2),
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
-            "market_cap": round(market_cap, 2),
+            "market_cap": round(market_cap, 2) if market_cap and not math.isnan(market_cap) else None,
             "mn_nav": round(mn_nav, 3) if mn_nav else None,
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
