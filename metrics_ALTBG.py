@@ -1,7 +1,7 @@
 from flask import Flask, jsonify 
 from flask_cors import CORS
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
 
 def get_metrics():
@@ -85,7 +85,7 @@ def get_metrics():
         market_cap_fully_diluted = shares_fully_diluted * altbg_price
         mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
 
-        # --- BTC yield over the last ~4 months (≈120 days), strict baseline ---
+        # --- BTC yield over the last ~3 months (≈90 days), strict baseline ---
         # Build cumulative holdings timeline from btc_history
         hist_sorted = sorted(btc_history, key=lambda e: e["date"])
         timeline = []
@@ -95,12 +95,12 @@ def get_metrics():
             cum_hold += float(e["btc"])
             timeline.append((d, cum_hold))
         
-        btc_yield_4m_pct = None
-        months_to_cover_4m = None
+        btc_yield_3m_pct = None
+        months_to_cover_3m = None
         
         if timeline:
             last_date, holdings_now = timeline[-1]
-            cutoff = last_date - timedelta(days=120)
+            cutoff = last_date - timedelta(days=90)  # 3 months
         
             # holdings at cutoff = latest cumulative holdings at or before cutoff
             holdings_at_cutoff = 0.0
@@ -112,21 +112,21 @@ def get_metrics():
         
             # Only compute yield if baseline > 0 to avoid division by zero
             if holdings_at_cutoff > 0 and holdings_now >= holdings_at_cutoff:
-                yield_factor_4m = holdings_now / holdings_at_cutoff          # e.g. 1.50 -> +50%
-                btc_yield_4m_pct = (yield_factor_4m - 1.0) * 100.0
+                yield_factor_3m = holdings_now / holdings_at_cutoff          # e.g. 1.50 -> +50%
+                btc_yield_3m_pct = (yield_factor_3m - 1.0) * 100.0
         
-                # Derive daily growth for the window actually covered
+                # Derive daily growth for the actual window covered
                 window_start = max(cutoff, timeline[0][0])
                 days_window = max((last_date - window_start).days, 1)
-                daily_yield_4m = yield_factor_4m ** (1.0 / days_window) - 1.0
+                daily_yield_3m = yield_factor_3m ** (1.0 / days_window) - 1.0
         
                 # Months-to-cover using short-term daily yield
-                if mn_nav and daily_yield_4m > -0.999999:
+                if mn_nav and daily_yield_3m > -0.999999:
                     ln_mnav = math.log(mn_nav)
-                    ln_yield_4m = math.log(1.0 + daily_yield_4m)
-                    if ln_yield_4m != 0:
-                        days_to_cover_4m = ln_mnav / ln_yield_4m
-                        months_to_cover_4m = days_to_cover_4m / 30.0
+                    ln_yield_3m = math.log(1.0 + daily_yield_3m)
+                    if ln_yield_3m != 0:
+                        days_to_cover_3m = ln_mnav / ln_yield_3m
+                        months_to_cover_3m = days_to_cover_3m / 30.0
 
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
@@ -212,8 +212,8 @@ def get_metrics():
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
-            "btc_yield_4m_pct": round(btc_yield_4m_pct, 2) if btc_yield_4m_pct is not None else None,
-            "months_to_cover_4m": round(months_to_cover_4m, 2) if months_to_cover_4m is not None else None,
+            "btc_yield_3m_pct": round(btc_yield_3m_pct, 2) if btc_yield_3m_pct is not None else None,
+            "months_to_cover_3m": round(months_to_cover_3m, 2) if months_to_cover_3m is not None else None,
         })
 
     except Exception as e:
