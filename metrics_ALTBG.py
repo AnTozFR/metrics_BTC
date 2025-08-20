@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import yfinance as yf
 from datetime import datetime
-from datetime import datetime, timedelta
 import math
 
 def get_metrics():
@@ -222,5 +221,6 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
