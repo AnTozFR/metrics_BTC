@@ -295,18 +295,26 @@ def get_metrics():
             "btc_yield_3m_pct": round(btc_yield_3m_pct, 2) if btc_yield_3m_pct is not None else None,
             "btc_yield_3m_diluted_pct": round(btc_yield_3m_diluted_pct, 2) if btc_yield_3m_diluted_pct is not None else None,
             "months_to_cover_3m": round(months_to_cover_3m, 2) if months_to_cover_3m is not None else None,
-            "cutoff": cutoff.strftime("%Y-%m-%d"),
-            "shares_at_cutoff": shares_at_cutoff,
-            "shares_now": basic_shares_current,
+            "cutoff": cutoff_str,  # <- au lieu de cutoff.strftime(...)
+            "shares_at_cutoff": shares_at_cutoff_out,  # <- au lieu de shares_at_cutoff
+            "shares_now": shares_now_out,
             "has_yahoo_series": basic_shares_series is not None,
             "yahoo_first_point": {
-            "date": str(basic_shares_series.index[0].date()),
-            "value": float(basic_shares_series.iloc[0])
-                } if basic_shares_series is not None else None,
+                "date": str(basic_shares_series.index[0].date()),
+                "value": float(basic_shares_series.iloc[0])
+            } if basic_shares_series is not None else None,
             "yahoo_last_point": {
-            "date": str(basic_shares_series.index[-1].date()),
-            "value": float(basic_shares_series.iloc[-1])
-                } if basic_shares_series is not None else None,
+                "date": str(basic_shares_series.index[-1].date()),
+                "value": float(basic_shares_series.iloc[-1])
+            } if basic_shares_series is not None else None,
+        
+            # (Optionnel) extra debug pour vérifier la cohérence
+            "dilution_factor_3m": (shares_now_out / shares_at_cutoff_out) if shares_now_out and shares_at_cutoff_out else None,
+            "btc_per_share_factor_3m": (
+                (holdings_now / shares_now_out) / (holdings_at_cutoff / shares_at_cutoff_out)
+            ) if (holdings_now and shares_now_out and holdings_at_cutoff and shares_at_cutoff_out) else None,
+            "daily_yield_3m": daily_yield_3m if 'daily_yield_3m' in locals() else None,
+            "days_window": days_window if 'days_window' in locals() else None,
         })
 
     except Exception as e:
@@ -314,9 +322,3 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
-
-
-
-
-
-
