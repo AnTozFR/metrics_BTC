@@ -85,8 +85,7 @@ def get_metrics():
         market_cap_fully_diluted = shares_fully_diluted * altbg_price
         mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
 
-        # --- BTC yield over the last ~3 months (≈90 days), strict baseline ---
-        # Build cumulative holdings timeline from btc_history
+        # --- BTC cumulés (timeline) ---
         hist_sorted = sorted(btc_history, key=lambda e: e["date"])
         timeline = []
         cum_hold = 0.0
@@ -94,40 +93,92 @@ def get_metrics():
             d = datetime.strptime(e["date"], "%Y-%m-%d")
             cum_hold += float(e["btc"])
             timeline.append((d, cum_hold))
-        
+
         btc_yield_3m_pct = None
+        btc_yield_3m_diluted_pct = None
         months_to_cover_3m = None
-        
+
+        # ================================
+        # Historique des actions (Yahoo)
+        # ================================
+        basic_shares_series = None
+        basic_shares_current = None
+
+        # Petite marge (120j) pour couvrir > 90j
+        lookup_start = (timeline[-1][0] - timedelta(days=120)).strftime("%Y-%m-%d") if timeline else "2024-01-01"
+        try:
+            sh = altbg.get_shares_full(start=lookup_start)
+            if sh is not None and len(sh) > 0:
+                sh = sh.dropna()
+                try:
+                    sh.index = sh.index.tz_localize(None)
+                except Exception:
+                    pass
+                basic_shares_series = sh
+                basic_shares_current = float(sh.iloc[-1])
+        except Exception:
+            pass
+
+        # Fallback : somme de ton capital si pas d'historique Yahoo
+        if basic_shares_current is None:
+            basic_shares_current = float(sum(capital_data["values"]))
+            basic_shares_series = None  # pas d'historique précis
+
+        # ================================
+        # BTC Yield 3 mois (brut + dilué)
+        # ================================
+        btc_per_share_now = None
+        btc_per_share_3m = None
+        basic_shares_cutoff_3m = None
+
         if timeline:
             last_date, holdings_now = timeline[-1]
-            cutoff = last_date - timedelta(days=90)  # 3 months
-        
-            # holdings at cutoff = latest cumulative holdings at or before cutoff
+            cutoff = last_date - timedelta(days=90)
+
+            # BTC à la date de cutoff (dernier cumul <= cutoff)
             holdings_at_cutoff = 0.0
             for dt, hold in timeline:
                 if dt <= cutoff:
                     holdings_at_cutoff = hold
                 else:
                     break
-        
-            # Only compute yield if baseline > 0 to avoid division by zero
-            if holdings_at_cutoff > 0 and holdings_now >= holdings_at_cutoff:
-                yield_factor_3m = holdings_now / holdings_at_cutoff          # e.g. 1.50 -> +50%
-                btc_yield_3m_pct = (yield_factor_3m - 1.0) * 100.0
-        
-                # Derive daily growth for the actual window covered
+
+            # Actions à la date de cutoff
+            shares_at_cutoff = basic_shares_current
+            if basic_shares_series is not None and len(basic_shares_series) > 0:
+                # prendre la dernière valeur <= cutoff
+                eligible = [(dt, val) for dt, val in basic_shares_series.items() if dt <= cutoff]
+                if eligible:
+                    shares_at_cutoff = float(eligible[-1][1])
+
+            basic_shares_cutoff_3m = shares_at_cutoff
+
+            # Yields
+            if holdings_at_cutoff > 0 and holdings_now >= holdings_at_cutoff and shares_at_cutoff > 0 and basic_shares_current > 0:
+                growth_factor_3m = holdings_now / holdings_at_cutoff
+                dilution_factor_3m = basic_shares_current / shares_at_cutoff
+
+                # BTC Yield "brut" (sans dilution)
+                btc_yield_3m_pct = (growth_factor_3m - 1.0) * 100.0
+
+                # BTC Yield "dilué" = évolution de (BTC / action)
+                btc_yield_3m_diluted_pct = (growth_factor_3m / dilution_factor_3m - 1.0) * 100.0
+
+                # BTC/share now & cutoff (pratique pour debugging / affichage)
+                btc_per_share_now = holdings_now / basic_shares_current
+                btc_per_share_3m = holdings_at_cutoff / shares_at_cutoff
+
+                # Estimation months_to_cover_3m (comme chez toi)
                 window_start = max(cutoff, timeline[0][0])
                 days_window = max((last_date - window_start).days, 1)
-                daily_yield_3m = yield_factor_3m ** (1.0 / days_window) - 1.0
-        
-                # Months-to-cover using short-term daily yield
+                daily_yield_3m = growth_factor_3m ** (1.0 / days_window) - 1.0
                 if mn_nav and daily_yield_3m > -0.999999:
                     ln_mnav = math.log(mn_nav)
                     ln_yield_3m = math.log(1.0 + daily_yield_3m)
                     if ln_yield_3m != 0:
                         days_to_cover_3m = ln_mnav / ln_yield_3m
                         months_to_cover_3m = days_to_cover_3m / 30.0
-
+                        
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
         days_elapsed = (datetime.today() - start_of_year).days
@@ -221,6 +272,3 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
-
-
-
