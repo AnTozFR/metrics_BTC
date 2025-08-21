@@ -247,10 +247,6 @@ def get_metrics():
         mnav_yesterday = (shares_now_out * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday else None
 
-        # PCV d’hier + variation
-        pcv_yesterday = (mnav_yesterday - 1) / months_to_cover_3m if mnav_yesterday and months_to_cover_3m else None
-        pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
-
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
@@ -283,7 +279,6 @@ def get_metrics():
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
             "pcv": round(pcv, 3) if pcv else None,
-            "pcv_change_pct": round(pcv_change_pct, 2) if pcv_change_pct else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
             "months_to_cover_diluted": round(months_to_cover_diluted, 2) if months_to_cover_diluted else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
@@ -307,6 +302,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
