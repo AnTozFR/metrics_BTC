@@ -275,8 +275,14 @@ def get_metrics():
             "shares_at_cutoff": shares_at_cutoff,
             "shares_now": basic_shares_current,
             "has_yahoo_series": basic_shares_series is not None,
-            "yahoo_first_point": str(basic_shares_series.iloc[0]) if basic_shares_series is not None else None,
-            "yahoo_last_point": str(basic_shares_series.iloc[-1]) if basic_shares_series is not None else None,
+            "yahoo_first_point": {
+            "date": str(basic_shares_series.index[0].date()),
+            "value": float(basic_shares_series.iloc[0])
+                } if basic_shares_series is not None else None,
+            "yahoo_last_point": {
+            "date": str(basic_shares_series.index[-1].date()),
+            "value": float(basic_shares_series.iloc[-1])
+                } if basic_shares_series is not None else None,
             })
 
     except Exception as e:
@@ -284,6 +290,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
