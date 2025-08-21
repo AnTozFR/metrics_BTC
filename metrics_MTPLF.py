@@ -277,6 +277,7 @@ def get_metrics():
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
             "mn_nav": round(mn_nav, 3) if mn_nav else None,
+            "mnav": round(mn_nav, 3) if mnav else None,
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
             "pcv": round(pcv, 3) if pcv else None,
@@ -303,5 +304,6 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
