@@ -80,7 +80,7 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mtplf_price
-        mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
+        diluted_mnav = market_cap_fully_diluted / btc_nav if btc_nav else None
         mnav = market_cap / btc_nav if btc_nav else None
 
         # ---------- BTC timeline cumulée ----------
@@ -229,7 +229,7 @@ def get_metrics():
         btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
-        pcv = (mn_nav - 1) / months_to_cover if months_to_cover else None
+        pcv = (mnav - 1) / months_to_cover if months_to_cover else None
 
         # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
         btc_hist = btc.history(period="2d")["Close"]
@@ -241,14 +241,14 @@ def get_metrics():
         mtplf_price_change_pct = ((mtplf_price - mtplf_price_yesterday) / mtplf_price_yesterday * 100) if mtplf_price_yesterday else None
 
         # mNAV d’hier
-        mn_nav_yesterday = (shares_fully_diluted * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
-        mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
+        diluted_mnav_yesterday = (shares_fully_diluted * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
+        diluted_mnav_change_pct = ((diluted_mnav - diluted_mnav_yesterday) / diluted_mnav_yesterday * 100) if diluted_mnav and diluted_mnav_yesterday else None
 
         mnav_yesterday = (shares_now_out * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday else None
 
         # PCV d’hier + variation
-        pcv_yesterday = (mn_nav_yesterday - 1) / months_to_cover if mn_nav_yesterday and months_to_cover else None
+        pcv_yesterday = (mnav_yesterday - 1) / months_to_cover if mnav_yesterday and months_to_cover else None
         pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
@@ -278,7 +278,7 @@ def get_metrics():
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
-            "mn_nav": round(mn_nav, 3) if mn_nav else None,
+            "diluted_mnav": round(diluted_mnav, 3) if diluted_mnav else None,
             "mnav": round(mnav, 3) if mnav else None,
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
@@ -288,7 +288,7 @@ def get_metrics():
             "months_to_cover": round(months_to_cover, 2) if months_to_cover else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "mtplf_price_change_pct": round(mtplf_price_change_pct, 2) if mtplf_price_change_pct else None,
-            "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct else None,
+            "diluted_mnav_change_pct": round(diluted_mnav_change_pct, 2) if diluted_mnav_change_pct else None,
             "mnav_change_pct": round(mnav_change_pct, 2) if mnav_change_pct else None,
             "shares_fully_diluted": shares_fully_diluted,
             "btc_history": btc_history,
@@ -307,5 +307,6 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
