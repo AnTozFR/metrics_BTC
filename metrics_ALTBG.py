@@ -263,7 +263,7 @@ def get_metrics():
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
-            "btc_yield_3m_pct": round(btc_yield_3m_pct, 2) if btc_yield_3m_pct is not None else None,
+            "btc_yield_3m_diluted_pct": round(btc_yield_3m_pct, 2) if btc_yield_3m_pct is not None else None,
             "months_to_cover_3m": round(months_to_cover_3m, 2) if months_to_cover_3m is not None else None,
         })
 
@@ -272,3 +272,4 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
