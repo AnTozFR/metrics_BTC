@@ -168,22 +168,22 @@ def get_metrics():
                 btc_per_share_now = holdings_now / basic_shares_current
                 btc_per_share_3m = holdings_at_cutoff / shares_at_cutoff
 
-        # Estimation months_to_cover_3m basée sur le **yield dilué 3 mois** (BTC par action)
-        window_start = max(cutoff, timeline[0][0])
-        days_window = max((last_date - window_start).days, 1)
-        
-        # Facteur de croissance sur 3 mois **par action** (dilué)
-        btc_per_share_factor_3m = (holdings_now / basic_shares_current) / (holdings_at_cutoff / shares_at_cutoff)
-        
-        # Rendement quotidien moyen dérivé du facteur dilué
-        daily_yield_3m = btc_per_share_factor_3m ** (1.0 / days_window) - 1.0
-        
-        if mn_nav and daily_yield_3m > -0.999999:
-            ln_mnav = math.log(mn_nav)
-            ln_yield_3m = math.log(1.0 + daily_yield_3m)
-            if ln_yield_3m != 0:
-                days_to_cover_3m = ln_mnav / ln_yield_3m
-                months_to_cover_3m = days_to_cover_3m / 30.0
+                # Estimation months_to_cover_3m basée sur le **yield dilué 3 mois** (BTC par action)
+                window_start = max(cutoff, timeline[0][0])
+                days_window = max((last_date - window_start).days, 1)
+                
+                # Facteur de croissance sur 3 mois **par action** (dilué)
+                btc_per_share_factor_3m = (holdings_now / basic_shares_current) / (holdings_at_cutoff / shares_at_cutoff)
+                
+                # Rendement quotidien moyen dérivé du facteur dilué
+                daily_yield_3m = btc_per_share_factor_3m ** (1.0 / days_window) - 1.0
+                
+                if mn_nav and daily_yield_3m > -0.999999:
+                    ln_mnav = math.log(mn_nav)
+                    ln_yield_3m = math.log(1.0 + daily_yield_3m)
+                    if ln_yield_3m != 0:
+                        days_to_cover_3m = ln_mnav / ln_yield_3m
+                        months_to_cover_3m = days_to_cover_3m / 30.0
                         
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
@@ -278,5 +278,6 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
