@@ -81,6 +81,8 @@ def get_metrics():
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mtplf_price
         mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
+        mnav = market_cap / btc_nav if btc_nav else None
+        
 
         # ---------- BTC timeline cumulée ----------
         hist_sorted = sorted(btc_history, key=lambda e: e["date"])
@@ -301,4 +303,5 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
