@@ -10,6 +10,7 @@ def get_metrics():
     shares_fully_diluted = 277_275_004
     btc_held = 2395
     btc_yield_ytd = 55069
+    q2_yield = 23112
 
     rows = [
         # date, acquired, avg_cost_after (GBP/BTC)
@@ -59,7 +60,7 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * swc_price
-        mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
+        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
 
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
@@ -67,10 +68,19 @@ def get_metrics():
         ytd_growth_factor = 1 + btc_yield_ytd / 100
         daily_yield = ytd_growth_factor ** (1 / days_elapsed) - 1
 
-        ln_mnav = math.log(mn_nav)
+        ln_mnav = math.log(mnav_diluted)
         ln_yield = math.log(1 + daily_yield)
         days_to_cover = ln_mnav / ln_yield if ln_yield != 0 else None
         months_to_cover = days_to_cover / 30 if days_to_cover else None
+
+        # Étapes pour retrouver le mois pour couvrir q2 based :
+        q2_growth_factor = 1 + q2_yield / 100
+        daily_yield_q2_based = q2_growth_factor ** (1 / 90) - 1
+
+        ln_mnav_q2_based = math.log(mnav_diluted)
+        ln_yield_q2_based = math.log(1 + daily_yield_q2_based)
+        days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_yield_q2_based != 0 else None
+        months_to_cover_q2_based = days_to_cover_q2_based / 30 if days_to_cover_q2_based else None
 
         # Début du programme
         start_date = datetime.strptime("2025-04-28", "%Y-%m-%d")
@@ -85,7 +95,7 @@ def get_metrics():
         btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
-        pcv = (mn_nav - 1) / months_to_cover if months_to_cover else None
+        pcv = (mnav_diluted - 1) / months_to_cover if months_to_cover else None
 
         # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
         btc_hist = btc.history(period="2d")["Close"]
@@ -97,11 +107,11 @@ def get_metrics():
         swc_price_change_pct = ((swc_price - swc_price_yesterday) / swc_price_yesterday * 100) if swc_price_yesterday else None
 
         # mNAV d’hier
-        mn_nav_yesterday = (shares_fully_diluted * swc_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday else None
-        mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
+        mnav_diluted_yesterday = (shares_fully_diluted * swc_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday else None
+        mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
 
         # PCV d’hier + variation
-        pcv_yesterday = (mn_nav_yesterday - 1) / months_to_cover if mn_nav_yesterday and months_to_cover else None
+        pcv_yesterday = (mnav_diluted_yesterday - 1) / months_to_cover if mnav_diluted_yesterday and months_to_cover else None
         pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
 
         btc_per_share = btc_held / shares_fully_diluted if shares_fully_diluted else None
@@ -121,22 +131,23 @@ def get_metrics():
         return jsonify({
             "btc_held": btc_held,
             "btc_yield_ytd": btc_yield_ytd,
+            "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
             "swc_price": round(swc_price, 2),
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2) if market_cap and not math.isnan(market_cap) else None,
-            "mn_nav": round(mn_nav, 3) if mn_nav else None,
+            "mnav_diluted": round(mnav_diluted, 3) if mnav_diluted else None,
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
             "pcv": round(pcv, 3) if pcv else None,
             "pcv_change_pct": round(pcv_change_pct, 2) if pcv_change_pct else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
-            "months_to_cover": round(months_to_cover, 2) if months_to_cover else None,
+            "months_to_cover_q2_based": round(months_to_cover_q2_based, 2) if months_to_cover_q2_based else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "swc_price_change_pct": round(swc_price_change_pct, 2) if swc_price_change_pct else None,
-            "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct else None,
+            "mnav_diluted_change_pct": round(mnav_diluted_change_pct, 2) if mnav_diluted_change_pct else None,
             "shares_fully_diluted": shares_fully_diluted,
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
