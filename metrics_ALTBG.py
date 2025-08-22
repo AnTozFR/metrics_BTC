@@ -131,10 +131,9 @@ def get_metrics():
         # Nombre de mois entiers écoulés depuis le début de l'année
         today = datetime.today()
         months_elapsed = today.month - 1 + (1 if today.day >= 1 else 0)  # +1 si on veut inclure le mois en cours
-        btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
-        pcv = (mnav - 1) / months_to_cover_ytd_based if months_to_cover_ytd_based else None
+        pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based else None
 
         # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
         btc_hist = btc.history(period="2d")["Close"]
@@ -211,7 +210,6 @@ def get_metrics():
             "mnav": round(mnav, 3) if mnav else None,
             "days_to_cover_q2_based": round(days_to_cover_q2_based, 2) if days_to_cover_q2_based else None,
             "pcv": round(pcv, 3) if pcv else None,
-            "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
             "months_to_cover_q2_based": round(months_to_cover_q2_based, 2) if months_to_cover_q2_based else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "altbg_price_change_pct": round(altbg_price_change_pct, 2) if altbg_price_change_pct else None,
@@ -233,6 +231,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
