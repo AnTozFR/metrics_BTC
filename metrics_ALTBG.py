@@ -9,6 +9,7 @@ def get_metrics():
     shares_fully_diluted = 331_180_647
     btc_held = 2201
     btc_yield_ytd = 1519.5
+    Q2_yield = 69
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
@@ -83,7 +84,7 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * altbg_price
-        mn_nav = market_cap_fully_diluted / btc_nav if btc_nav else None
+        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
 
         # --- BTC cumulés (timeline) ---
         hist_sorted = sorted(btc_history, key=lambda e: e["date"])
@@ -178,8 +179,8 @@ def get_metrics():
                 # Rendement quotidien moyen dérivé du facteur dilué
                 daily_yield_3m = btc_per_share_factor_3m ** (1.0 / days_window) - 1.0
                 
-                if mn_nav and daily_yield_3m > -0.999999:
-                    ln_mnav = math.log(mn_nav)
+                if mnav_diluted and daily_yield_3m > -0.999999:
+                    ln_mnav = math.log(mnav_diluted)
                     ln_yield_3m = math.log(1.0 + daily_yield_3m)
                     if ln_yield_3m != 0:
                         days_to_cover_3m = ln_mnav / ln_yield_3m
@@ -191,7 +192,7 @@ def get_metrics():
         ytd_growth_factor = 1 + btc_yield_ytd / 100
         daily_yield = ytd_growth_factor ** (1 / days_elapsed) - 1
 
-        ln_mnav = math.log(mn_nav)
+        ln_mnav = math.log(mnav_diluted)
         ln_yield = math.log(1 + daily_yield)
         days_to_cover = ln_mnav / ln_yield if ln_yield != 0 else None
         months_to_cover = days_to_cover / 30 if days_to_cover else None
@@ -209,7 +210,7 @@ def get_metrics():
         btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
-        pcv = (mn_nav - 1) / months_to_cover if months_to_cover else None
+        pcv = (mnav_diluted - 1) / months_to_cover if months_to_cover else None
 
         # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
         btc_hist = btc.history(period="2d")["Close"]
@@ -221,11 +222,11 @@ def get_metrics():
         altbg_price_change_pct = ((altbg_price - altbg_price_yesterday) / altbg_price_yesterday * 100) if altbg_price_yesterday else None
 
         # mNAV d’hier
-        mn_nav_yesterday = (shares_fully_diluted * altbg_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and altbg_price_yesterday else None
-        mn_nav_change_pct = ((mn_nav - mn_nav_yesterday) / mn_nav_yesterday * 100) if mn_nav and mn_nav_yesterday else None
+        mnav_diluted_yesterday = (shares_fully_diluted * altbg_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and altbg_price_yesterday else None
+        mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
 
         # PCV d’hier + variation
-        pcv_yesterday = (mn_nav_yesterday - 1) / months_to_cover if mn_nav_yesterday and months_to_cover else None
+        pcv_yesterday = (mnav_diluted_yesterday - 1) / months_to_cover if mnav_diluted_yesterday and months_to_cover else None
         pcv_change_pct = ((pcv - pcv_yesterday) / pcv_yesterday * 100) if pcv and pcv_yesterday else None
 
         btc_per_share = btc_held / shares_fully_diluted if shares_fully_diluted else None
@@ -249,7 +250,7 @@ def get_metrics():
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
-            "mn_nav": round(mn_nav, 3) if mn_nav else None,
+            "mnav_diluted": round(mnav_diluted, 3) if mnav_diluted else None,
             "daily_yield_pct": round(daily_yield * 100, 3),
             "days_to_cover": round(days_to_cover, 2) if days_to_cover else None,
             "pcv": round(pcv, 3) if pcv else None,
@@ -258,7 +259,7 @@ def get_metrics():
             "months_to_cover": round(months_to_cover, 2) if months_to_cover else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "altbg_price_change_pct": round(altbg_price_change_pct, 2) if altbg_price_change_pct else None,
-            "mn_nav_change_pct": round(mn_nav_change_pct, 2) if mn_nav_change_pct else None,
+            "mnav_diluted_change_pct": round(mnav_diluted_change_pct, 2) if mnav_diluted_change_pct else None,
             "shares_fully_diluted": shares_fully_diluted,
             "btc_history": btc_history,
             "fundraising_data": fundraising_data,
@@ -290,9 +291,3 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
-
-
-
-
-
-
