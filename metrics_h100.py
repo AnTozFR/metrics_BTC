@@ -150,12 +150,6 @@ def get_metrics():
 
         btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None else None
 
-
-        # --- Conversion USD -> EUR ---
-        eur_usd = yf.Ticker("EURUSD=X").history(period="1d")["Close"].iloc[-1]
-        usd_to_eur = 1 / eur_usd if eur_usd else None
-
-        # Montant total investi en USD
         invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
 
         btc_gain = btc_nav - invest_price
