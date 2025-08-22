@@ -170,7 +170,7 @@ def get_metrics():
         shares_yesterday = None
         if shares_series is not None and len(shares_series) > 0 and yday_dt is not None:
             for dt, val in shares_series.items():
-                if dt <= yday_dt:
+                if dt.date() <= yday_dt.date():
                     shares_yesterday = float(val)
                 else:
                     break
@@ -231,6 +231,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
