@@ -101,7 +101,7 @@ def get_metrics():
         except Exception:
             pass  # si Yahoo ne renvoie rien, shares_now_out restera None
                    
-        # Étapes pour retrouver les 5.43 months :
+        # Étapes pour retrouver le mois pour couvrir ytd based :
         start_of_year = datetime(datetime.today().year, 1, 1)
         days_elapsed = (datetime.today() - start_of_year).days
         ytd_growth_factor = 1 + btc_yield_ytd / 100
@@ -112,6 +112,15 @@ def get_metrics():
         days_to_cover_ytd_based = ln_mnav_ytd_based / ln_yield_ytd_based if ln_yield_ytd_based != 0 else None
         months_to_cover_ytd_based = days_to_cover_ytd_based / 30 if days_to_cover_ytd_based else None
 
+        # Étapes pour retrouver le mois pour couvrir q2 based :
+        q2_growth_factor = 1 + q2_yield / 100
+        daily_yield_q2_based = q2_growth_factor ** (1 / 90) - 1
+
+        ln_mnav_q2_based = math.log(mnav)
+        ln_yield_q2_based = math.log(1 + daily_yield_q2_based)
+        days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_yield_q2_based != 0 else None
+        months_to_cover_q2_based = days_to_cover_q2_based / 30 if days_to_cover_q2_based else None
+        
         # Début du programme
         start_date = datetime.strptime("2024-11-05", "%Y-%m-%d")
         days_since_start = (datetime.today() - start_date).days
@@ -191,6 +200,7 @@ def get_metrics():
         return jsonify({
             "btc_held": btc_held,
             "btc_yield_ytd": btc_yield_ytd,
+            "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
             "altbg_price": round(altbg_price, 2),
@@ -199,10 +209,10 @@ def get_metrics():
             "market_cap": round(market_cap, 2),
             "mnav_diluted": round(mnav_diluted, 3) if mnav_diluted else None,
             "mnav": round(mnav, 3) if mnav else None,
-            "days_to_cover_ytd_based": round(days_to_cover_ytd_based, 2) if days_to_cover_ytd_based else None,
+            "days_to_cover_q2_based": round(days_to_cover_q2_based, 2) if days_to_cover_q2_based else None,
             "pcv": round(pcv, 3) if pcv else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
-            "months_to_cover_ytd_based": round(months_to_cover_ytd_based, 2) if months_to_cover_ytd_based else None,
+            "months_to_cover_q2_based": round(months_to_cover_q2_based, 2) if months_to_cover_q2_based else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "altbg_price_change_pct": round(altbg_price_change_pct, 2) if altbg_price_change_pct else None,
             "mnav_change_pct": round(mnav_change_pct, 2) if mnav_change_pct else None,
@@ -223,6 +233,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
