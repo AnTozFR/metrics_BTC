@@ -1,7 +1,7 @@
 from flask import Flask, jsonify 
 from flask_cors import CORS
 import yfinance as yf
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
 
 def get_metrics():
@@ -125,7 +125,7 @@ def get_metrics():
         btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
-        pcv = (mnav - 1) / months_to_cover_ytd_based if months_to_cover else None
+        pcv = (mnav - 1) / months_to_cover_ytd_based if months_to_cover_ytd_based else None
 
         # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
         btc_hist = btc.history(period="2d")["Close"]
@@ -137,9 +137,44 @@ def get_metrics():
         altbg_price_change_pct = ((altbg_price - altbg_price_yesterday) / altbg_price_yesterday * 100) if altbg_price_yesterday else None
         
 
-        # mNAV d’hier
-        mnav_yesterday = (shares_yesterday * altbg_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and altbg_price_yesterday else None
-        mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday else None
+        # --- Timestamp de "hier" côté action (même index que altbg_hist) ---
+        yday_dt = altbg_hist.index[-2].to_pydatetime() if len(altbg_hist) >= 2 else None
+        
+        # --- Récupérer/rafraîchir la série d'actions si besoin ---
+        shares_series = None
+        try:
+            # réutilise sh si déjà chargé ci-dessus
+            if 'sh' in locals() and sh is not None and len(sh) > 0:
+                shares_series = sh
+            else:
+                tmp = altbg.get_shares_full(start="2024-01-01")
+                if tmp is not None and len(tmp) > 0:
+                    tmp = tmp.dropna()
+                    try:
+                        tmp.index = tmp.index.tz_localize(None)
+                    except Exception:
+                        pass
+                    shares_series = tmp
+        except Exception:
+            pass
+        
+        # --- Actions "hier" = dernière valeur <= close d’hier ---
+        shares_yesterday = None
+        if shares_series is not None and len(shares_series) > 0 and yday_dt is not None:
+            for dt, val in shares_series.items():
+                if dt <= yday_dt:
+                    shares_yesterday = float(val)
+                else:
+                    break
+        # fallback: si rien avant hier, prends la dernière connue
+        if shares_yesterday is None and shares_series is not None and len(shares_series) > 0:
+            shares_yesterday = float(shares_series.iloc[-1])
+        
+        # --- Market cap "hier" + mNAV "hier" (non diluée) ---
+        market_cap_yesterday = (shares_yesterday * altbg_price_yesterday) if (shares_yesterday and altbg_price_yesterday) else None
+        mnav_yesterday = (market_cap_yesterday / (btc_price_yesterday * btc_held)) if (market_cap_yesterday and btc_price_yesterday) else None
+        mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if (mnav and mnav_yesterday) else None
+
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
@@ -164,11 +199,10 @@ def get_metrics():
             "market_cap": round(market_cap, 2),
             "mnav_diluted": round(mnav_diluted, 3) if mnav_diluted else None,
             "mnav": round(mnav, 3) if mnav else None,
-            "days_to_cover_ytd_based": round(days_to_cover, 2) if days_to_cover else None,
+            "days_to_cover_ytd_based": round(days_to_cover_ytd_based, 2) if days_to_cover_ytd_based else None,
             "pcv": round(pcv, 3) if pcv else None,
-            "pcv_change_pct": round(pcv_change_pct, 2) if pcv_change_pct else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
-            "months_to_cover_ytd_based": round(months_to_cover, 2) if months_to_cover else None,
+            "months_to_cover_ytd_based": round(months_to_cover_ytd_based, 2) if months_to_cover_ytd_based else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
             "altbg_price_change_pct": round(altbg_price_change_pct, 2) if altbg_price_change_pct else None,
             "mnav_change_pct": round(mnav_change_pct, 2) if mnav_change_pct else None,
@@ -189,6 +223,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
