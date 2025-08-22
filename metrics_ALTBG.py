@@ -86,6 +86,20 @@ def get_metrics():
         market_cap_fully_diluted = shares_fully_diluted * altbg_price
         mnav = market_cap / btc_nav if btc_nav else None
         mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
+
+                # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
+        shares_now_out = None
+        try:
+            sh = altbg.get_shares_full(start="2024-01-01")
+            if sh is not None and len(sh) > 0:
+                sh = sh.dropna()
+                try:
+                    sh.index = sh.index.tz_localize(None)
+                except Exception:
+                    pass
+                shares_now_out = float(sh.iloc[-1])  # dernière valeur = actions en circulation actuelles
+        except Exception:
+            pass  # si Yahoo ne renvoie rien, shares_now_out restera None
                    
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
@@ -93,10 +107,10 @@ def get_metrics():
         ytd_growth_factor = 1 + btc_yield_ytd / 100
         daily_yield_ytd_based = ytd_growth_factor ** (1 / days_elapsed) - 1
 
-        ln_mnav = math.log(mnav)
-        ln_yield_ytd_based = math.log(1 + daily_yield)
-        days_to_cover_ytd_based = ln_mnav / ln_yield if ln_yield != 0 else None
-        months_to_cover_ytd_based = days_to_cover / 30 if days_to_cover else None
+        ln_mnav_ytd_based = math.log(mnav)
+        ln_yield_ytd_based = math.log(1 + daily_yield_ytd_based)
+        days_to_cover_ytd_based = ln_mnav_ytd_based / ln_yield_ytd_based if ln_yield_ytd_based != 0 else None
+        months_to_cover_ytd_based = days_to_cover_ytd_based / 30 if days_to_cover_ytd_based else None
 
         # Début du programme
         start_date = datetime.strptime("2024-11-05", "%Y-%m-%d")
@@ -121,12 +135,13 @@ def get_metrics():
         altbg_hist = altbg.history(period="2d")["Close"]
         altbg_price_yesterday = altbg_hist.iloc[-2] if len(altbg_hist) >= 2 else None
         altbg_price_change_pct = ((altbg_price - altbg_price_yesterday) / altbg_price_yesterday * 100) if altbg_price_yesterday else None
+        
 
         # mNAV d’hier
-        mnav_yesterday = (shares_fully_diluted * altbg_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and altbg_price_yesterday else None
+        mnav_yesterday = (shares_now_out * altbg_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and altbg_price_yesterday else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday else None
 
-        btc_per_share = btc_held / shares_fully_diluted if shares_fully_diluted else None
+        btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
 
@@ -175,6 +190,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
