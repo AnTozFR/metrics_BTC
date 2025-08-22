@@ -9,7 +9,7 @@ def get_metrics():
     shares_fully_diluted = 331_180_647
     btc_held = 2201
     btc_yield_ytd = 1519.5
-    Q2_yield = 69
+    q2_yield = 69
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
@@ -291,3 +291,4 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
