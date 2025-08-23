@@ -149,6 +149,7 @@ def get_metrics():
         return jsonify({
             "btc_held": btc_held,
             "btc_yield_ytd": btc_yield_ytd,
+            "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
             "mtplf_price": round(mtplf_price, 2),
@@ -177,6 +178,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
