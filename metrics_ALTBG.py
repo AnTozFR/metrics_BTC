@@ -87,7 +87,7 @@ def get_metrics():
         mnav = market_cap / btc_nav if btc_nav else None
         mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
 
-                # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
+        # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
         shares_now_out = None
         try:
             sh = altbg.get_shares_full(start="2024-01-01")
@@ -231,6 +231,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
