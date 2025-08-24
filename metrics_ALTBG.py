@@ -46,8 +46,12 @@ def get_metrics():
         {"date": "2025-07-15", "type": "ATM Type", "detail": "TOBAM (3.95€/share) - ATM Type #5", "montant": 1.1},
         {"date": "2025-07-15", "type": "Reserved capital increase", "detail": "Adam Back (4.01€/share)", "montant": 5},
         {"date": "2025-07-21", "type": "ATM Type", "detail": "TOBAM (4.1039€/share)  - ATM Type #6", "montant": 1.6},
-        {"date": "2025-07-21", "type": "Reserved capital increase", "detail": "Peak Hodl Ltd (3.4693€/share)", "montant": 8.7}
-    ]
+        {"date": "2025-07-21", "type": "Reserved capital increase", "detail": "Peak Hodl Ltd (3.4693€/share)", "montant": 8.7},
+        {"date": "2025-08-04", "type": "Capital increase", "detail": "TOBAM Bitcoin Alpha Fund (2.904€/share)", "montant": 5},
+        {"date": "2025-08-04", "type": "OCA A-05 Tranche 1", "detail": "TOBAM Bitcoin Alpha Fund (3.6557€/share)", "montant": 6.5},
+        {"date": "2025-08-18", "type": "Capital increase", "detail": "Adam Back (2.238€/share)", "montant": 2.2},
+        {"date": "2025-08-18", "type": "OCA B-01 Conversion", "detail": "Fulgur Ventures (0.544€/share)", "montant": 0}
+        ]
 
     capital_data = {
         "labels": [
@@ -63,7 +67,7 @@ def get_metrics():
         "values": [
             145_911_009,
             103_249_822,
-            36_412_138,
+            37_412_138,
             18_418_953,
             14_809_515,
             7_999_210,
@@ -231,6 +235,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
