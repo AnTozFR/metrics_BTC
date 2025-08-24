@@ -48,11 +48,12 @@ def get_metrics():
 
     try:
         # Données live
-        btc = yf.Ticker("BTC-EUR")
+        btc = yf.Ticker("BTC-GBP")
         btc_price = btc.history(period="1d")["Close"].iloc[-1]
 
-        swc = yf.Ticker("3M8.F")
-        swc_price = swc.info.get("currentPrice", 0)
+        swc = yf.Ticker("SWC.AQ")
+        swc_price_gbp_pence = swc.info.get("currentPrice", 0) or 0
+        swc_price = swc_price_gbp_pence / 100.0
         market_cap = swc.info.get("marketCap", None)
         if market_cap is None:
             market_cap = float("nan")
@@ -104,10 +105,11 @@ def get_metrics():
 
         swc_hist = swc.history(period="2d")["Close"]
         swc_price_yesterday = swc_hist.iloc[-2] if len(swc_hist) >= 2 else None
-        swc_price_change_pct = ((swc_price - swc_price_yesterday) / swc_price_yesterday * 100) if swc_price_yesterday else None
+        swc_price_yesterday_gbp = (swc_price_yesterday / 100.0) if swc_price_yesterday is not None else None
+        swc_price_change_pct = (((swc_price - swc_price_yesterday_gbp) / swc_price_yesterday_gbp * 100) if swc_price_yesterday_gbp else None)
 
         # mNAV d’hier
-        mnav_diluted_yesterday = (shares_fully_diluted * swc_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday else None
+        mnav_diluted_yesterday = (shares_fully_diluted * swc_price_yesterday_gbp) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday_gbp else None
         mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
 
         # PCV d’hier + variation
@@ -118,11 +120,9 @@ def get_metrics():
 
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
 
-        btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None else None
+        btc_value_per_share_gbp = btc_per_share * btc_price if btc_per_share is not None else None
 
-        gbp_eur = yf.Ticker("GBPEUR=X").history(period="1d")["Close"].iloc[-1]
-        invest_price_gbp = sum(entry["btc"] * entry["price"] for entry in btc_history)
-        invest_price = invest_price_gbp * gbp_eur if gbp_eur else None
+        invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
 
         btc_gain = btc_nav - invest_price
 
@@ -152,7 +152,7 @@ def get_metrics():
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
-            "btc_value_per_share_eur": btc_value_per_share_eur,
+            "btc_value_per_share_gbp": btc_value_per_share_gbp,
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
