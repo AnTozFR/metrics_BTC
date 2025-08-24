@@ -135,6 +135,8 @@ def get_metrics():
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
             "swc_price": round(swc_price, 2),
+            "swc_price_yesterday": swc_price_yesterday,
+            "swc_price_yesterday_gbp": swc_price_yesterday_gbp,
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2) if market_cap and not math.isnan(market_cap) else None,
