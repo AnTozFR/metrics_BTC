@@ -50,7 +50,6 @@ def get_metrics():
         {"date": "2025-08-04", "type": "Capital increase", "detail": "TOBAM Bitcoin Alpha Fund (2.904€/share)", "montant": 5},
         {"date": "2025-08-04", "type": "OCA A-05 Tranche 1", "detail": "TOBAM Bitcoin Alpha Fund (3.6557€/share)", "montant": 6.5},
         {"date": "2025-08-18", "type": "Capital increase", "detail": "Adam Back (2.238€/share)", "montant": 2.2},
-        {"date": "2025-08-18", "type": "OCA B-01 Conversion", "detail": "Fulgur Ventures (0.544€/share)", "montant": 0}
         ]
 
     capital_data = {
@@ -235,6 +234,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
