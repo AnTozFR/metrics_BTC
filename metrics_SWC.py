@@ -104,9 +104,17 @@ def get_metrics():
         btc_price_change_pct = ((btc_price - btc_price_yesterday) / btc_price_yesterday * 100) if btc_price_yesterday else None
 
         swc_hist = swc.history(period="2d")["Close"]
+
+        # Dernière clôture -1 jour
         swc_price_yesterday = swc_hist.iloc[-2] if len(swc_hist) >= 2 else None
         swc_price_yesterday_gbp = (swc_price_yesterday / 100.0) if swc_price_yesterday is not None else None
-        swc_price_change_pct = (((swc_price - swc_price_yesterday_gbp) / swc_price_yesterday_gbp * 100) if swc_price_yesterday_gbp else None)
+        
+        # Variation sur 24h, sinon None
+        swc_price_change_pct = (
+            ((swc_price - swc_price_yesterday_gbp) / swc_price_yesterday_gbp * 100)
+            if swc_price_yesterday_gbp
+            else None
+        )
 
         # mNAV d’hier
         mnav_diluted_yesterday = (shares_fully_diluted * swc_price_yesterday_gbp) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday_gbp else None
