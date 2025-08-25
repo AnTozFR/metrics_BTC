@@ -11,6 +11,7 @@ def get_metrics():
     btc_held = 2395
     btc_yield_ytd = 55069
     q2_yield = 23112
+    debt = 15_800_000
 
     rows = [
         # date, acquired, avg_cost_after (GBP/BTC)
@@ -61,7 +62,12 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * swc_price
-        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
+        
+        enterprise_value = market_cap + debt if market_cap and not math.isnan(market_cap) else None
+        enterprise_value_fully_diluted = market_cap_fully_diluted + debt
+        
+        mnav = enterprise_value / btc_nav if (enterprise_value and btc_nav) else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
         # Étapes pour retrouver les 5.43 months :
         start_of_year = datetime(datetime.today().year, 1, 1)
@@ -117,7 +123,17 @@ def get_metrics():
         )
 
         # mNAV d’hier
-        mnav_diluted_yesterday = (shares_fully_diluted * swc_price_yesterday_gbp) / (btc_price_yesterday * btc_held) if btc_price_yesterday and swc_price_yesterday_gbp else None
+        # mNAV (diluted) d’hier avec dette
+        market_cap_yesterday = (shares_fully_diluted * swc_price_yesterday_gbp) if (swc_price_yesterday_gbp) else None
+        btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
+        enterprise_value_fully_diluted_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
+        
+        mnav_diluted_yesterday = (
+            enterprise_value_fully_diluted_yesterday / btc_nav_yesterday
+            if (enterprise_value_fully_diluted_yesterday and btc_nav_yesterday)
+            else None
+        )
+
         mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
 
         # PCV d’hier + variation
@@ -138,6 +154,7 @@ def get_metrics():
 
         return jsonify({
             "btc_held": btc_held,
+            "debt": debt,
             "btc_yield_ytd": btc_yield_ytd,
             "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
