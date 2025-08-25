@@ -103,10 +103,10 @@ def get_metrics():
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mstr_price
 
-        entreprise_value = market_cap + debt
+        enterprise_value = market_cap + debt
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt
         
-        mnav = entreprise_value / btc_nav if btc_nav else None
+        mnav = enterprise_value / btc_nav if btc_nav else None
         mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
         # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
@@ -248,6 +248,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
