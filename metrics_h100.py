@@ -161,6 +161,10 @@ def get_metrics():
             "btc_held": btc_held,
             "debt_eur": debt,
 
+            "btc_yield_ytd": btc_yield_ytd,
+            "q2_yield": q2_yield,
+            "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
+
             "btc_price": round(btc_price, 2),
             "h100_price": round(h100_price, 2),
 
