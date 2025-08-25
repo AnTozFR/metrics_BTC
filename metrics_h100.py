@@ -108,6 +108,12 @@ def get_metrics():
         pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based else None
         pcv_diluted = (mnav_diluted - 1) / months_to_cover_q2_based_diluted if months_to_cover_q2_based_diluted else None
 
+        start_date = datetime.strptime("2025-05-22", "%Y-%m-%d")
+        days_since_start = (datetime.today() - start_date).days
+        
+        # Vitesse d'accumulation linéaire
+        btc_per_day = btc_held / days_since_start if days_since_start > 0 else None
+
         # ---------- Historique prix pour variations ----------
         btc_hist = btc.history(period="2d")["Close"]
         btc_price_yesterday = btc_hist.iloc[-2] if len(btc_hist) >= 2 else None
