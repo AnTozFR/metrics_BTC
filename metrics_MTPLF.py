@@ -70,18 +70,30 @@ def get_metrics():
         mtplf = yf.Ticker("3350.T")
         mtplf_price = mtplf.info.get("currentPrice", 0)
         market_cap = mtplf.info.get("marketCap", 0)
-        
+
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mtplf_price
 
         enterprise_value = market_cap + debt
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt
-        
+
         mnav = enterprise_value / btc_nav if btc_nav else None
         mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
-        # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
+        # --- Historiques sur 2 jours (même modèle que MSTR) ---
+        btc_hist = btc.history(period="2d")["Close"]
+        btc_price_yesterday = btc_hist.iloc[-2] if len(btc_hist) >= 2 else None
+        btc_price_change_pct = ((btc_price - btc_price_yesterday) / btc_price_yesterday * 100) if btc_price_yesterday else None
+
+        mtplf_hist = mtplf.history(period="2d")["Close"]
+        mtplf_price_yesterday = mtplf_hist.iloc[-2] if len(mtplf_hist) >= 2 else None
+        mtplf_price_change_pct = ((mtplf_price - mtplf_price_yesterday) / mtplf_price_yesterday * 100) if mtplf_price_yesterday else None
+
+        # --- Timestamp de "hier" (défini AVANT de s'en servir) ---
+        yday_dt = mtplf_hist.index[-2].to_pydatetime() if len(mtplf_hist) >= 2 else None
+
+        # ---------- Actions en circulation actuelles ----------
         shares_now_out = None
         try:
             sh = mtplf.get_shares_full(start="2025-01-01")
@@ -91,11 +103,28 @@ def get_metrics():
                     sh.index = sh.index.tz_localize(None)
                 except Exception:
                     pass
-                shares_now_out = float(sh.iloc[-1])  # dernière valeur = actions en circulation actuelles
+                shares_now_out = float(sh.iloc[-1])
         except Exception:
-            pass  # si Yahoo ne renvoie rien, shares_now_out restera None
+            pass
 
-        # --- Actions "hier" = dernière valeur <= close d’hier ---
+        # ---------- Série d'actions pour trouver "hier" ----------
+        shares_series = None
+        try:
+            if 'sh' in locals() and sh is not None and len(sh) > 0:
+                shares_series = sh
+            else:
+                tmp = mtplf.get_shares_full(start="2024-01-01")
+                if tmp is not None and len(tmp) > 0:
+                    tmp = tmp.dropna()
+                    try:
+                        tmp.index = tmp.index.tz_localize(None)
+                    except Exception:
+                        pass
+                    shares_series = tmp
+        except Exception:
+            pass
+
+        # Actions "hier" = dernière valeur <= close d’hier
         shares_yesterday = None
         if shares_series is not None and len(shares_series) > 0 and yday_dt is not None:
             for dt, val in shares_series.items():
@@ -103,71 +132,53 @@ def get_metrics():
                     shares_yesterday = float(val)
                 else:
                     break
-        # fallback: si rien avant hier, prends la dernière connue
-        if shares_yesterday is None and shares_series is not None and len(shares_series) > 0:
-            shares_yesterday = float(shares_series.iloc[-1])
-            
-        # Étapes pour retrouver le mois pour couvrir q2 based :
+        # fallback
+        if shares_yesterday is None:
+            if shares_series is not None and len(shares_series) > 0:
+                shares_yesterday = float(shares_series.iloc[-1])
+            elif shares_now_out:
+                shares_yesterday = float(shares_now_out)
+
+        # Étapes pour retrouver le mois pour couvrir (même logique)
         q2_growth_factor = 1 + q2_yield / 100
         daily_yield_q2_based = q2_growth_factor ** (1 / 90) - 1
 
-        ln_mnav_q2_based = math.log(mnav)
-        ln_yield_q2_based = math.log(1 + daily_yield_q2_based)
-        days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_yield_q2_based != 0 else None
-        months_to_cover_q2_based = days_to_cover_q2_based / 30 if days_to_cover_q2_based else None
+        ln_mnav_q2_based = math.log(mnav) if mnav and mnav > 0 else None
+        ln_yield_q2_based = math.log(1 + daily_yield_q2_based) if daily_yield_q2_based is not None else None
+        days_to_cover_q2_based = (ln_mnav_q2_based / ln_yield_q2_based) if (ln_mnav_q2_based and ln_yield_q2_based) else None
+        months_to_cover_q2_based = (days_to_cover_q2_based / 30) if days_to_cover_q2_based else None
 
-        ln_mnav_diluted_q2_based = math.log(mnav_diluted)
-        ln_yield_q2_based = math.log(1 + daily_yield_q2_based)
-        days_to_cover_q2_based_diluted = ln_mnav_diluted_q2_based / ln_yield_q2_based if ln_yield_q2_based != 0 else None
-        months_to_cover_q2_based_diluted = days_to_cover_q2_based_diluted / 30 if days_to_cover_q2_based_diluted else None
+        ln_mnav_diluted_q2_based = math.log(mnav_diluted) if mnav_diluted and mnav_diluted > 0 else None
+        days_to_cover_q2_based_diluted = (ln_mnav_diluted_q2_based / ln_yield_q2_based) if (ln_mnav_diluted_q2_based and ln_yield_q2_based) else None
+        months_to_cover_q2_based_diluted = (days_to_cover_q2_based_diluted / 30) if days_to_cover_q2_based_diluted else None
 
         # Début du programme
         start_date = datetime.strptime("2020-08-10", "%Y-%m-%d")
         days_since_start = (datetime.today() - start_date).days
-
-        # Vitesse d'accumulation linéaire
         btc_per_day = btc_held / days_since_start if days_since_start > 0 else None
 
-        # Nombre de mois entiers écoulés depuis le début de l'année
         today = datetime.today()
-        months_elapsed = today.month - 1 + (1 if today.day >= 1 else 0)  # +1 si on veut inclure le mois en cours
+        months_elapsed = today.month - 1 + (1 if today.day >= 1 else 0)
         btc_yield_monthly = btc_yield_ytd / months_elapsed if months_elapsed > 0 else None
 
         # PCV
         pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based else None
 
-        # Historique sur 2 jours (doit venir avant tout calcul basé dessus)
-        btc_hist = btc.history(period="2d")["Close"]
-        btc_price_yesterday = btc_hist.iloc[-2] if len(btc_hist) >= 2 else None
-        btc_price_change_pct = ((btc_price - btc_price_yesterday) / btc_price_yesterday * 100) if btc_price_yesterday else None
-
-        mtplf_hist = mtplf.history(period="2d")["Close"]
-        mtplf_price_yesterday = mtplf_hist.iloc[-2] if len(mtplf_hist) >= 2 else None
-        mtplf_price_change_pct = ((mtplf_price - mtplf_price_yesterday) / mtplf_price_yesterday * 100) if mtplf_price_yesterday else None
-
-        # mNAV d’hier
-        mnav_diluted_yesterday = (shares_fully_diluted * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
-        mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
-
+        # Hier (avec dette)
         market_cap_yesterday = (shares_yesterday * mtplf_price_yesterday) if (shares_yesterday and mtplf_price_yesterday) else None
         btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
-        
-        # >> inclure la dette aussi hier <<
         enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
-        
         mnav_yesterday = (enterprise_value_yesterday / btc_nav_yesterday) if (enterprise_value_yesterday and btc_nav_yesterday) else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if (mnav and mnav_yesterday) else None
 
+        # Par action
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
-
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
-
         btc_value_per_share_jpy = btc_per_share * btc_price if btc_per_share is not None else None
 
+        # Coût d’acquisition & torque
         invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
-
         btc_gain = btc_nav - invest_price
-
         btc_torque = btc_nav / invest_price
 
         return jsonify({
@@ -202,12 +213,4 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
-
-
-
-
-
-
-
-
 
