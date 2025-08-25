@@ -10,6 +10,7 @@ def get_metrics():
     btc_held = 629376
     btc_yield_ytd = 25.1
     q2_yield = 7.84
+    debt = 14_645_000_000
 
     btc_history = [
     {"date": "2020-08-10", "btc": 21454, "price": 11652},
@@ -98,11 +99,14 @@ def get_metrics():
         mstr_price = mstr.info.get("currentPrice", 0)
         market_cap = mstr.info.get("marketCap", 0)
 
+        entreprise_value = market_cap + debt
+
          # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mstr_price
-        mnav = market_cap / btc_nav if btc_nav else None
-        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
+        
+        mnav = (market_cap + debt) / btc_nav if btc_nav else None
+        mnav_diluted = (market_cap_fully_diluted + debt) / btc_nav if btc_nav else None
 
         # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
         shares_now_out = None
@@ -237,6 +241,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
