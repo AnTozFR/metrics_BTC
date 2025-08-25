@@ -10,6 +10,7 @@ def get_metrics():
     btc_held = 2201
     btc_yield_ytd = 1519.5
     q2_yield = 69
+    debt = 115_900_000
 
     btc_history = [
     {"date": "2024-11-05", "btc": 15, "price": 63729},
@@ -87,8 +88,12 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * altbg_price
-        mnav = market_cap / btc_nav if btc_nav else None
-        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
+        
+        enterprise_value = market_cap + debt
+        enterprise_value_fully_diluted = market_cap_fully_diluted + debt
+        
+        mnav = enterprise_value / btc_nav if btc_nav else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
         # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
         shares_now_out = None
@@ -182,10 +187,13 @@ def get_metrics():
             shares_yesterday = float(shares_series.iloc[-1])
         
         # --- Market cap "hier" + mNAV "hier" (non diluée) ---
+        # 3) Hier (inclure la dette dans l'EV d'hier)
         market_cap_yesterday = (shares_yesterday * altbg_price_yesterday) if (shares_yesterday and altbg_price_yesterday) else None
-        mnav_yesterday = (market_cap_yesterday / (btc_price_yesterday * btc_held)) if (market_cap_yesterday and btc_price_yesterday) else None
+        btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
+        enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
+        
+        mnav_yesterday = (enterprise_value_yesterday / btc_nav_yesterday) if (enterprise_value_yesterday and btc_nav_yesterday) else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if (mnav and mnav_yesterday) else None
-
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
@@ -234,6 +242,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
