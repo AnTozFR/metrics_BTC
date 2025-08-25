@@ -6,8 +6,8 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 316_727_000
-    btc_held = 629376
+    shares_fully_diluted = 317_624_000
+    btc_held = 632457
     btc_yield_ytd = 25.1
     q2_yield = 7.84
     debt = 14_645_000_000
@@ -99,14 +99,15 @@ def get_metrics():
         mstr_price = mstr.info.get("currentPrice", 0)
         market_cap = mstr.info.get("marketCap", 0)
 
-        entreprise_value = market_cap + debt
-
          # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mstr_price
+
+        entreprise_value = market_cap + debt
+        enterprise_value_fully_diluted = market_cap_fully_diluted + debt
         
-        mnav = (market_cap + debt) / btc_nav if btc_nav else None
-        mnav_diluted = (market_cap_fully_diluted + debt) / btc_nav if btc_nav else None
+        mnav = entreprise_value / btc_nav if btc_nav else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
         # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
         shares_now_out = None
@@ -195,8 +196,14 @@ def get_metrics():
         
         # --- Market cap "hier" + mNAV "hier" (non diluée) ---
         market_cap_yesterday = (shares_yesterday * mstr_price_yesterday) if (shares_yesterday and mstr_price_yesterday) else None
-        mnav_yesterday = (market_cap_yesterday / (btc_price_yesterday * btc_held)) if (market_cap_yesterday and btc_price_yesterday) else None
+        btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
+        
+        # >> inclure la dette aussi hier <<
+        enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
+        
+        mnav_yesterday = (enterprise_value_yesterday / btc_nav_yesterday) if (enterprise_value_yesterday and btc_nav_yesterday) else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if (mnav and mnav_yesterday) else None
+
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
@@ -241,6 +248,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
