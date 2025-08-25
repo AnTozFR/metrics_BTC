@@ -110,8 +110,6 @@ def get_metrics():
 
         start_date = datetime.strptime("2025-05-22", "%Y-%m-%d")
         days_since_start = (datetime.today() - start_date).days
-        
-        # Vitesse d'accumulation linéaire
         btc_per_day = btc_held / days_since_start if days_since_start > 0 else None
 
         # ---------- Historique prix pour variations ----------
