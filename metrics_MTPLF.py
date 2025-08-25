@@ -10,6 +10,7 @@ def get_metrics():
     btc_held = 18991
     btc_yield_ytd = 479.5
     q2_yield = 129.5
+    debt = 14_250_000_000
 
     btc_history = [
     {"date": "2024-04-23", "btc": 97.85, "price": 10220000},
@@ -73,8 +74,12 @@ def get_metrics():
         # NAV & mNAV
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mtplf_price
-        mnav = market_cap / btc_nav if btc_nav else None
-        mnav_diluted = market_cap_fully_diluted / btc_nav if btc_nav else None
+
+        enterprise_value = market_cap + debt
+        enterprise_value_fully_diluted = market_cap_fully_diluted + debt
+        
+        mnav = enterprise_value / btc_nav if btc_nav else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav else None
 
         # ---------- Récupération du nombre d'actions en circulation (Yahoo) ----------
         shares_now_out = None
@@ -89,6 +94,18 @@ def get_metrics():
                 shares_now_out = float(sh.iloc[-1])  # dernière valeur = actions en circulation actuelles
         except Exception:
             pass  # si Yahoo ne renvoie rien, shares_now_out restera None
+
+        # --- Actions "hier" = dernière valeur <= close d’hier ---
+        shares_yesterday = None
+        if shares_series is not None and len(shares_series) > 0 and yday_dt is not None:
+            for dt, val in shares_series.items():
+                if dt.date() <= yday_dt.date():
+                    shares_yesterday = float(val)
+                else:
+                    break
+        # fallback: si rien avant hier, prends la dernière connue
+        if shares_yesterday is None and shares_series is not None and len(shares_series) > 0:
+            shares_yesterday = float(shares_series.iloc[-1])
             
         # Étapes pour retrouver le mois pour couvrir q2 based :
         q2_growth_factor = 1 + q2_yield / 100
@@ -132,8 +149,14 @@ def get_metrics():
         mnav_diluted_yesterday = (shares_fully_diluted * mtplf_price_yesterday) / (btc_price_yesterday * btc_held) if btc_price_yesterday and mtplf_price_yesterday else None
         mnav_diluted_change_pct = ((mnav_diluted - mnav_diluted_yesterday) / mnav_diluted_yesterday * 100) if mnav_diluted and mnav_diluted_yesterday else None
 
-        mnav_yesterday = ((shares_now_out * mtplf_price_yesterday) / (btc_price_yesterday * btc_held)if shares_now_out and btc_price_yesterday and mtplf_price_yesterday else None)
-        mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday else None
+        market_cap_yesterday = (shares_yesterday * mtplf_price_yesterday) if (shares_yesterday and mtplf_price_yesterday) else None
+        btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
+        
+        # >> inclure la dette aussi hier <<
+        enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
+        
+        mnav_yesterday = (enterprise_value_yesterday / btc_nav_yesterday) if (enterprise_value_yesterday and btc_nav_yesterday) else None
+        mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if (mnav and mnav_yesterday) else None
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
 
@@ -179,6 +202,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
