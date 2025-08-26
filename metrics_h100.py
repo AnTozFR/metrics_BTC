@@ -170,7 +170,7 @@ def get_metrics():
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
 
             "btc_price": round(btc_price, 2),
-            "h100_price": round(h100_price, 2),
+            "share_price": round(h100_price, 2),
 
             "btc_nav": round(btc_nav, 2) if btc_nav is not None else None,
 
@@ -191,7 +191,7 @@ def get_metrics():
             "pcv_diluted": round(pcv_diluted, 3) if pcv_diluted else None,
 
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
-            "h100_price_change_pct": round(h100_price_change_pct, 2) if h100_price_change_pct else None,
+            "share_price_change_pct": round(h100_price_change_pct, 2) if h100_price_change_pct else None,
 
             "shares_fully_diluted": shares_fully_diluted,
             "shares_now_out": shares_now_out,
