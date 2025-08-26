@@ -10,7 +10,8 @@ def get_metrics():
     btc_held = 911.29
     btc_yield_ytd = 6013
     q2_yield = 1129
-    debt = 30_719_716.92  # EUR
+    debt_btc = 0
+    debt_fiat = 30_719_716.92  # EUR
 
     btc_history = [
         {"date": "2025-05-22", "btc": 4.39,  "price": 110913},
@@ -69,6 +70,7 @@ def get_metrics():
         btc_nav = btc_price * btc_held if btc_price else None
 
         # ---------- Enterprise Value (EV) ----------
+        debt = debt_btc + debt_fiat
         enterprise_value = (market_cap + debt) if market_cap is not None else None
         enterprise_value_fully_diluted = (market_cap_fully_diluted + debt) if market_cap_fully_diluted is not None else None
 
