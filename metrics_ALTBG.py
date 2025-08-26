@@ -241,6 +241,7 @@ def get_metrics():
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
+            "shares_now_out": shares_now_out,
             })
 
     except Exception as e:
@@ -248,6 +249,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
