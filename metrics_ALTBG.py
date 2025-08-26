@@ -214,6 +214,7 @@ def get_metrics():
             "debt": debt,
             "debt_btc": debt_btc,
             "debt_fiat": debt_fiat,
+            "enterprise_value": enterprise_value,
             "btc_yield_ytd": btc_yield_ytd,
             "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
@@ -236,7 +237,7 @@ def get_metrics():
             "capital_data": capital_data,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
-            "btc_value_per_share_eur": btc_value_per_share_eur,
+            "btc_value_per_share": btc_value_per_share_eur,
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
@@ -247,6 +248,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
