@@ -207,7 +207,7 @@ def get_metrics():
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
-            "btc_value_per_share_jpy": btc_value_per_share_jpy,
+            "btc_value_per_share": btc_value_per_share_jpy,
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2),
             "btc_torque": btc_torque,
@@ -219,6 +219,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
