@@ -10,7 +10,8 @@ def get_metrics():
     btc_held = 632457
     btc_yield_ytd = 25.1
     q2_yield = 7.84
-    debt = 14_645_000_000
+    debt_btc = 0
+    debt_fiat = 14_645_000_000
 
     btc_history = [
     {"date": "2020-08-10", "btc": 21454, "price": 11652},
@@ -104,6 +105,7 @@ def get_metrics():
         btc_nav = btc_price * btc_held
         market_cap_fully_diluted = shares_fully_diluted * mstr_price
 
+        debt = debt_btc + debt_fiat
         enterprise_value = market_cap + debt
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt
         
@@ -250,6 +252,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
