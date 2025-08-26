@@ -11,7 +11,8 @@ def get_metrics():
     btc_held = 2395
     btc_yield_ytd = 55069
     q2_yield = 23112
-    debt = 15_800_000
+    debt_btc = 15_800_000
+    debt_fiat = 0
 
     rows = [
         ("2025-04-28", 2.30, 73913, 2.30),
@@ -63,6 +64,7 @@ def get_metrics():
         btc_nav = btc_price * btc_held
 
         # EV
+        debt = debt_btc + debt_fiat
         enterprise_value = market_cap + debt
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt
 
