@@ -186,6 +186,8 @@ def get_metrics():
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
+            "shares_fully_diluted": shares_fully_diluted,
+            "shares_now_out": shares_basics,
             "share_price_change_pct": round(swc_price_change_pct, 2) if swc_price_change_pct else None,
             "btc_per_share": btc_per_share,
             "btc_per_share_diluted": btc_per_share_diluted,
