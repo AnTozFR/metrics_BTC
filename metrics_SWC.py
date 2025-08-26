@@ -161,6 +161,8 @@ def get_metrics():
         return jsonify({
             "btc_held": btc_held,
             "debt": debt,
+            "debt_btc": debt_btc,
+            "debt_fiat": debt_fiat,
             "btc_price": round(btc_price, 2),
             "share_price": round(swc_price, 2),
             "btc_nav": round(btc_nav, 2),
