@@ -188,7 +188,7 @@ def get_metrics():
             "q2_yield": q2_yield,
             "btc_price": round(btc_price, 2),
             "btc_per_day": round(btc_per_day, 3) if btc_per_day else None,
-            "mtplf_price": round(mtplf_price, 2),
+            "share_price": round(mtplf_price, 2),
             "btc_nav": round(btc_nav, 2),
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
@@ -196,7 +196,7 @@ def get_metrics():
             "pcv": round(pcv, 3) if pcv else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
-            "mtplf_price_change_pct": round(mtplf_price_change_pct, 2) if mtplf_price_change_pct else None,
+            "share_price_change_pct": round(mtplf_price_change_pct, 2) if mtplf_price_change_pct else None,
             "mnav_change_pct": round(mnav_change_pct, 2) if mnav_change_pct else None,
             "shares_fully_diluted": shares_fully_diluted,
             "btc_history": btc_history,
@@ -214,5 +214,6 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
