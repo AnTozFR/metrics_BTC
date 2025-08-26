@@ -198,6 +198,7 @@ def get_metrics():
             "market_cap_fully_diluted": round(market_cap_fully_diluted, 2),
             "market_cap": round(market_cap, 2),
             "mnav": round(mnav, 3) if mnav else None,
+            "mnav_diluted": round(mnav_diluted, 3) if mnav_diluted else None,
             "pcv": round(pcv, 3) if pcv else None,
             "btc_yield_monthly_pct": round(btc_yield_monthly, 2) if btc_yield_monthly else None,
             "btc_price_change_pct": round(btc_price_change_pct, 2) if btc_price_change_pct else None,
@@ -219,6 +220,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
