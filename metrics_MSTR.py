@@ -242,6 +242,7 @@ def get_metrics():
             "share_price_change_pct": round(mstr_price_change_pct, 2) if mstr_price_change_pct else None,
             "mnav_change_pct": round(mnav_change_pct, 2) if mnav_change_pct else None,
             "shares_fully_diluted": shares_fully_diluted,
+            "shares_now_out": shares_now_out,
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
@@ -256,6 +257,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
