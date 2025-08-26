@@ -168,6 +168,7 @@ def get_metrics():
             "debt": debt,
             "debt_btc": debt_btc,
             "debt_fiat": debt_fiat,
+            "enterprise_value": enterprise_value,
 
             "btc_yield_ytd": btc_yield_ytd,
             "q2_yield": q2_yield,
@@ -203,7 +204,7 @@ def get_metrics():
             "btc_history": btc_history,
             "btc_per_share": btc_per_share,
             "satoshi_per_share": satoshi_per_share,
-            "btc_value_per_share_eur": btc_value_per_share_eur,
+            "btc_value_per_share": btc_value_per_share_eur,
 
             "invest_price": round(invest_price, 2),
             "btc_gain": round(btc_gain, 2) if btc_gain is not None else None,
