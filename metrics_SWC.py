@@ -8,8 +8,8 @@ def get_metrics():
     # Données fixes
     shares_basics = 277_275_004
     shares_fully_diluted = 373_275_004
-    btc_held = 2395
-    btc_yield_ytd = 67624
+    btc_held = 2440
+    btc_yield_ytd = 56105
     q2_yield = 23112
     debt_btc = 15_800_000
     debt_fiat = 0
@@ -35,6 +35,7 @@ def get_metrics():
         ("2025-07-30",225.00,81346,2050.00),
         ("2025-08-08",50.00, 81472,2100.00),
         ("2025-08-12",295.00,82399,2395.00),
+        ("2025-08-12",45.00,82409,2440.00),
     ]
     
     prev_total = 0
