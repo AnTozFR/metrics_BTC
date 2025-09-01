@@ -7,8 +7,8 @@ import math
 def get_metrics():
     # Données fixes
     shares_fully_diluted = 910_692_925
-    btc_held = 18991
-    btc_yield_ytd = 479.5
+    btc_held = 20000
+    btc_yield_ytd = 486.7
     q2_yield = 129.4
     debt_btc = 0
     debt_fiat = 14_250_000_000
@@ -60,7 +60,8 @@ def get_metrics():
     {"date": "2025-08-04", "btc": 463.00, "price": 17270000},
     {"date": "2025-08-12", "btc": 518.00, "price": 17540000},
     {"date": "2025-08-18", "btc": 775.00, "price": 17720000},
-    {"date": "2025-08-24", "btc": 103.00, "price": 16860000}
+    {"date": "2025-08-24", "btc": 103.00, "price": 16860000},
+    {"date": "2025-09-01", "btc": 1009.00, "price": 16330000}
     ]
 
     try:
@@ -221,6 +222,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
