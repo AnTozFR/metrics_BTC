@@ -11,7 +11,7 @@ def get_metrics():
     btc_yield_ytd = 487
     q2_yield = 129.4
     debt_btc = 0
-    debt_fiat = 6_000_000_000
+    debt_fiat = 4_500_000_000
 
     btc_history = [
     {"date": "2024-04-23", "btc": 97.85, "price": 10220000},
@@ -223,6 +223,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
