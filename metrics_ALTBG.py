@@ -66,18 +66,16 @@ def get_metrics():
             "Dirigeants",
             "TOBAM",
             "UTXO Management",
-            "Peak Hodl Ltd",
-            "Actions gratuites"
+            "Peak Hodl Ltd"
         ],
         "values": [
-            145_911_009,
-            103_249_822,
+            147_161_009,
+            105_329_656,
             37_412_138,
-            18_418_953,
-            14_809_515,
+            20_298_953,
+            15_248_681,
             7_999_210,
-            2_500_000,
-            1_880_000
+            2_500_000
         ]
     }
 
@@ -253,6 +251,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
