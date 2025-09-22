@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 335_949_647
-    btc_held = 2249
-    btc_yield_ytd = 1536.6
+    shares_fully_diluted = 389_824_422
+    btc_held = 2800
+    btc_yield_ytd = 1651.2
     q2_yield = 69
     debt_btc = 115_900_000
     debt_fiat = 0
@@ -29,6 +29,7 @@ def get_metrics():
     {"date": "2025-08-05", "btc": 62, "price": 99889},
     {"date": "2025-08-11", "btc": 126, "price": 98746},
     {"date": "2025-09-15", "btc": 48, "price": 98575},
+    {"date": "2025-09-22", "btc": 551, "price": 99272},
     ]
 
     fundraising_data = [
@@ -70,12 +71,12 @@ def get_metrics():
             "Peak Hodl Ltd"
         ],
         "values": [
-            147_161_009,
-            105_329_656,
+            155_588_780,
+            148_671_191,
             37_412_138,
-            20_298_953,
+            21_873_863,
             15_248_681,
-            7_999_210,
+            8_529_769,
             2_500_000
         ]
     }
@@ -252,6 +253,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
