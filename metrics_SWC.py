@@ -11,7 +11,7 @@ def get_metrics():
     btc_held = 2650
     btc_yield_ytd = 57718
     q2_yield = 23112
-    debt_btc = 0
+    debt_btc = 157230000
     debt_fiat = 0
 
     rows = [
