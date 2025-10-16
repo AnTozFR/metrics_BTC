@@ -6,7 +6,7 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 354_740_195
+    shares_fully_diluted = 354_432_922
     btc_held = 1046.66
     btc_yield_ytd = 7768
     q2_yield = 1129
