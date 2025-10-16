@@ -55,6 +55,7 @@ def get_metrics():
                     sh.index = sh.index.tz_localize(None)
                 except Exception:
                     pass
+                sh = sh.sort_index()
                 shares_now_out = float(sh.iloc[-1])
         except Exception:
             pass
