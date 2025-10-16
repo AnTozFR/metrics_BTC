@@ -9,7 +9,7 @@ def get_metrics():
     shares_fully_diluted = 389_824_422
     btc_held = 2812
     btc_yield_ytd = 1651.2
-    q2_yield = 69
+    q2_yield = 28.1
     debt_btc = 115_900_000
     debt_fiat = 0
 
@@ -254,6 +254,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
