@@ -168,7 +168,6 @@ def get_metrics():
             "debt": debt,
             "debt_btc": debt_btc,
             "debt_fiat": debt_fiat,
-            "enterprise_value": enterprise_value,
             "btc_price": round(btc_price, 2),
             "share_price": round(swc_price, 2),
             "btc_nav": round(btc_nav, 2),
