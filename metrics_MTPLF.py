@@ -74,7 +74,26 @@ def get_metrics():
 
         mtplf = yf.Ticker("3350.T")
         mtplf_price = mtplf.info.get("currentPrice", 0)
-        market_cap = mtplf.info.get("marketCap", 0)
+
+        shares_now_out = None
+        try:
+            sh = mtplf.get_shares_full(start="2025-01-01")
+            if sh is not None and len(sh) > 0:
+                sh = sh.dropna()
+                try:
+                    sh.index = sh.index.tz_localize(None)
+                except:
+                    pass
+                sh = sh.sort_index()  # Ajoute pour tri
+                shares_now_out = float(sh.iloc[-1])
+        except:
+            pass
+        if shares_now_out is None:
+            shares_now_out = mtplf.info.get('sharesOutstanding', None)
+            if shares_now_out:
+                shares_now_out = float(shares_now_out)
+        # Puis pour market_cap :
+        market_cap = shares_now_out * mtplf_price if shares_now_out and mtplf_price else mtplf.info.get('marketCap', 0)
 
         # NAV & mNAV
         btc_nav = btc_price * btc_held
@@ -99,20 +118,6 @@ def get_metrics():
         # --- Timestamp de "hier" (défini AVANT de s'en servir) ---
         yday_dt = mtplf_hist.index[-2].to_pydatetime() if len(mtplf_hist) >= 2 else None
 
-        # ---------- Actions en circulation actuelles ----------
-        shares_now_out = None
-        try:
-            sh = mtplf.get_shares_full(start="2025-01-01")
-            if sh is not None and len(sh) > 0:
-                sh = sh.dropna()
-                try:
-                    sh.index = sh.index.tz_localize(None)
-                except Exception:
-                    pass
-                shares_now_out = float(sh.iloc[-1])
-        except Exception:
-            pass
-
         # ---------- Série d'actions pour trouver "hier" ----------
         shares_series = None
         try:
@@ -126,6 +131,7 @@ def get_metrics():
                         tmp.index = tmp.index.tz_localize(None)
                     except Exception:
                         pass
+                    tmp = tmp.sort_index()
                     shares_series = tmp
         except Exception:
             pass
@@ -225,6 +231,7 @@ def get_metrics():
 
 def get_mtplf_metrics():
     return get_metrics()
+
 
 
 
