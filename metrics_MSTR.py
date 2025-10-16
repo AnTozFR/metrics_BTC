@@ -8,8 +8,8 @@ def get_metrics():
     # Données fixes
     shares_fully_diluted = 320_067_000
     btc_held = 640250
-    btc_yield_ytd = 25.9
-    q2_yield = 7.84
+    btc_yield_ytd = 26
+    q2_yield = 5.2
     debt_btc = 0
     debt_fiat = 14_828_000_000
 
@@ -263,6 +263,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
