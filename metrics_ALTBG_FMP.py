@@ -6,13 +6,6 @@ from datetime import datetime, timedelta
 import math
 import os
 
-# Assuming this is part of a Flask app; add if needed:
-# app = Flask(__name__)
-# CORS(app)
-# @app.route('/altbg_metrics')
-# def altbg_metrics():
-#     return get_altbg_metrics()
-
 FMP_API_KEY = os.getenv('FMP_API_KEY')
 if not FMP_API_KEY:
     raise ValueError("FMP_API_KEY environment variable is required.")
