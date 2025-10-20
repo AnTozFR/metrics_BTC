@@ -5,16 +5,23 @@ from datetime import datetime, timedelta
 import math
 import os
 
-FMP_API_KEY = os.getenv('FMP_API_KEY')
-if not FMP_API_KEY:
-    raise ValueError("FMP_API_KEY environment variable is required.")
+# Assuming this is part of a Flask app; add if needed:
+# app = Flask(__name__)
+# CORS(app)
+# @app.route('/altbg_metrics')
+# def altbg_metrics():
+#     return get_altbg_metrics()
 
-FMP_BASE_URL = 'https://financialmodelingprep.com/api/v3'
+EODHD_API_TOKEN = os.getenv('EODHD_API_TOKEN')
+if not EODHD_API_TOKEN:
+    raise ValueError("EODHD_API_TOKEN environment variable is required.")
 
-def fetch_fmp_data(endpoint, params=None):
-    """Helper to fetch data from FMP API with error handling."""
-    url = FMP_BASE_URL + '/' + endpoint
-    all_params = {'apikey': FMP_API_KEY}
+EODHD_BASE_URL = 'https://eodhd.com/api'
+
+def fetch_eodhd_data(endpoint, params=None):
+    """Helper to fetch data from EODHD API with error handling."""
+    url = EODHD_BASE_URL + endpoint
+    all_params = {'api_token': EODHD_API_TOKEN, 'fmt': 'json'}
     if params:
         all_params.update(params)
     try:
@@ -22,14 +29,14 @@ def fetch_fmp_data(endpoint, params=None):
         response.raise_for_status()
         data = response.json()
         if isinstance(data, list) and not data:
-            print(f"Empty data for {endpoint}")
-            return None
+            raise ValueError("Empty data returned")
         return data
     except Exception as e:
         print(f"Error fetching {endpoint}: {e}")
         return None
 
 def get_metrics():
+    # Données fixes (inchangées)
     shares_fully_diluted = 389_824_422
     btc_held = 2812
     btc_yield_ytd = 1651.2
@@ -86,96 +93,87 @@ def get_metrics():
     ]
 
     capital_data = {
-        "labels": ["Fulgur Ventures", "Public & Institutional", "Adam Back", "Dirigeants", "TOBAM", "UTXO Management", "Peak Hodl Ltd"],
-        "values": [155_588_780, 148_671_191, 37_412_138, 21_873_863, 15_248_681, 8_529_769, 2_500_000]
+        "labels": [
+            "Fulgur Ventures",
+            "Public & Institutional",
+            "Adam Back",
+            "Dirigeants",
+            "TOBAM",
+            "UTXO Management",
+            "Peak Hodl Ltd"
+        ],
+        "values": [
+            155_588_780,
+            148_671_191,
+            37_412_138,
+            21_873_863,
+            15_248_681,
+            8_529_769,
+            2_500_000
+        ]
     }
 
     try:
         today = datetime.today()
         end_date = today.strftime('%Y-%m-%d')
-        start_hist = (today - timedelta(days=3)).strftime('%Y-%m-%d')
+        start_hist = (today - timedelta(days=3)).strftime('%Y-%m-%d')  # Buffer for 2 days
 
-        # BTC histo en USD
-        btc_usd_hist = fetch_fmp_data('cryptocurrency/historical-price-eod-full', {'symbol': 'BTCUSD', 'from': start_hist, 'to': end_date})
-        # EURUSD histo (pour conversion)
-        eur_usd_hist = fetch_fmp_data('historical-forex-full', {'symbol': 'EURUSD', 'from': start_hist, 'to': end_date})
-        # ALCPB histo (en EUR natif)
-        altbg_hist_data = fetch_fmp_data('historical-price-full', {'symbol': 'ALCPB.PA', 'from': start_hist, 'to': end_date})
+        # BTC-EUR EOD history (2 days)
+        btc_hist_data = fetch_eodhd_data('/eod/BTC-EUR.CC', {'period': 'd', 'from': start_hist, 'to': end_date})
+        # ALCPB.PA EOD history (2 days)
+        altbg_hist_data = fetch_eodhd_data('/eod/ALCPB.PA', {'period': 'd', 'from': start_hist, 'to': end_date})
+        # Fundamentals for ALCPB.PA (shares, market cap)
+        altbg_fund = fetch_eodhd_data('/fundamentals/ALCPB.PA')
 
-        # Extract & convert to EUR
+        # Extract prices
         btc_price = None
         btc_price_yesterday = None
-        eur_usd_rate = 1.0  # Fallback USD=EUR
-        eur_usd_yesterday = 1.0
         altbg_price = None
         altbg_price_yesterday = None
         yday_dt = None
 
-        if btc_usd_hist and 'historical' in btc_usd_hist and len(btc_usd_hist['historical']) >= 2:
-            hist_btc = btc_usd_hist['historical']
-            btc_usd_today = float(hist_btc[-1]['close'])
-            btc_usd_yest = float(hist_btc[-2]['close'])
-            # Convert today
-            if eur_usd_hist and 'historical' in eur_usd_hist and len(eur_usd_hist['historical']) >= 1:
-                eur_usd_rate = float(eur_usd_hist['historical'][-1]['close'])
-            btc_price = btc_usd_today / eur_usd_rate if eur_usd_rate else None
-            # Convert yesterday
-            if len(eur_usd_hist['historical']) >= 2:
-                eur_usd_yesterday = float(eur_usd_hist['historical'][-2]['close'])
-            btc_price_yesterday = btc_usd_yest / eur_usd_yesterday if eur_usd_yesterday else None
+        if btc_hist_data and len(btc_hist_data) >= 2:
+            btc_price = float(btc_hist_data[-1]['close'])
+            btc_price_yesterday = float(btc_hist_data[-2]['close'])
 
-        if altbg_hist_data and 'historical' in altbg_hist_data and len(altbg_hist_data['historical']) >= 2:
-            hist_altbg = altbg_hist_data['historical']
-            altbg_price = float(hist_altbg[-1]['close'])
-            altbg_price_yesterday = float(hist_altbg[-2]['close'])
-            yday_str = hist_altbg[-2]['date']
-            yday_dt = datetime.strptime(yday_str, '%Y-%m-%d')
+        if altbg_hist_data and len(altbg_hist_data) >= 2:
+            altbg_price = float(altbg_hist_data[-1]['close'])
+            altbg_price_yesterday = float(altbg_hist_data[-2]['close'])
+            yday_str = altbg_hist_data[-2]['date']
+            yday_dt = datetime.strptime(yday_str, '%Y-%m-%d').date()
 
-        # Shares (endpoint corrigé)
-        shares_data = fetch_fmp_data('historical-share-float', {'symbol': 'ALCPB.PA', 'limit': 40})
+        # Shares from fundamentals (current)
         shares_now_out = None
         shares_yesterday = None
-        if shares_data and len(shares_data) > 0:
-            shares_list = sorted(shares_data, key=lambda x: x.get('date', ''))
-            if shares_list:
-                shares_now_out = float(shares_list[-1]['sharesOutstanding'])
-                if yday_dt:
-                    for entry in reversed(shares_list):
-                        try:
-                            entry_date = datetime.strptime(entry['date'], '%Y-%m-%d').date()
-                            if entry_date <= yday_dt.date():
-                                shares_yesterday = float(entry['sharesOutstanding'])
-                                break
-                        except ValueError:
-                            continue
-                if shares_yesterday is None:
-                    shares_yesterday = shares_now_out
-        # Fallback si pas de shares histo (courant pour non-US)
-        if shares_now_out is None:
-            shares_now_out = shares_fully_diluted  # Approximation
+        if altbg_fund and 'General' in altbg_fund:
+            shares_now_out = float(altbg_fund['General'].get('SharesOutstanding', 0))
+        # For yesterday: Approximate with current (historical shares in Financials > Quarterly, but simplified)
+        shares_yesterday = shares_now_out  # Fallback; for precise, parse quarterly reports
 
-        # NAV & mNAV (avec guards)
+        market_cap = float(altbg_fund['General'].get('market_cap_basic', 0)) if altbg_fund and 'General' in altbg_fund else (shares_now_out * altbg_price if shares_now_out and altbg_price else 0)
+
+        # NAV & mNAV
         btc_nav = btc_price * btc_held if btc_price else None
         market_cap_fully_diluted = shares_fully_diluted * altbg_price if altbg_price else None
         debt = debt_btc + debt_fiat
-        market_cap = shares_now_out * altbg_price if shares_now_out and altbg_price else 0
-        enterprise_value = market_cap + debt if market_cap is not None else debt  # Fallback sans market_cap
+        enterprise_value = market_cap + debt if market_cap else None
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt if market_cap_fully_diluted else None
         
-        mnav = enterprise_value / btc_nav if btc_nav and enterprise_value and btc_nav != 0 else None
-        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav and enterprise_value_fully_diluted and btc_nav != 0 else None
+        mnav = enterprise_value / btc_nav if btc_nav and enterprise_value else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav and enterprise_value_fully_diluted else None
 
-        # Calculs YTD/Q2 (avec guards sur mnav)
+        # YTD based
         start_of_year = datetime(today.year, 1, 1)
         days_elapsed = (today - start_of_year).days
         ytd_growth_factor = 1 + btc_yield_ytd / 100
-        daily_yield_ytd_based = ytd_growth_factor ** (1 / days_elapsed) - 1 if days_elapsed > 0 else 0
+        daily_yield_ytd_based = ytd_growth_factor ** (1 / days_elapsed) - 1 if days_elapsed > 0 else None
 
         ln_mnav_ytd_based = math.log(mnav) if mnav and mnav > 0 else None
-        ln_yield_ytd_based = math.log(1 + daily_yield_ytd_based) if daily_yield_ytd_based is not None and daily_yield_ytd_based > -1 else None
+        ln_yield_ytd_based = math.log(1 + daily_yield_ytd_based) if daily_yield_ytd_based else None
         days_to_cover_ytd_based = ln_mnav_ytd_based / ln_yield_ytd_based if ln_yield_ytd_based and ln_yield_ytd_based != 0 else None
         months_to_cover_ytd_based = days_to_cover_ytd_based / 30 if days_to_cover_ytd_based else None
 
+        # Q2 based
         q2_growth_factor = 1 + q2_yield / 100
         daily_yield_q2_based = q2_growth_factor ** (1 / 90) - 1
 
@@ -184,31 +182,39 @@ def get_metrics():
         days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_yield_q2_based and ln_yield_q2_based != 0 else None
         months_to_cover_q2_based = days_to_cover_q2_based / 30 if days_to_cover_q2_based else None
         
+        # Program start
         start_date = datetime.strptime("2024-11-05", "%Y-%m-%d")
         days_since_start = (today - start_date).days
         btc_per_day = btc_held / days_since_start if days_since_start > 0 else None
 
         months_elapsed = today.month - 1 + (1 if today.day >= 1 else 0)
-        pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based and months_to_cover_q2_based != 0 and mnav else None
 
-        # Price changes (avec guards)
+        # PCV
+        pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based and months_to_cover_q2_based != 0 else None
+
+        # Price changes
         btc_price_change_pct = ((btc_price - btc_price_yesterday) / btc_price_yesterday * 100) if btc_price_yesterday and btc_price_yesterday != 0 else None
         altbg_price_change_pct = ((altbg_price - altbg_price_yesterday) / altbg_price_yesterday * 100) if altbg_price_yesterday and altbg_price_yesterday != 0 else None
         
+        # Yesterday mNAV
         market_cap_yesterday = (shares_yesterday * altbg_price_yesterday) if shares_yesterday and altbg_price_yesterday else None
         btc_nav_yesterday = (btc_price_yesterday * btc_held) if btc_price_yesterday else None
-        enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else debt
+        enterprise_value_yesterday = (market_cap_yesterday + debt) if market_cap_yesterday else None
         
-        mnav_yesterday = enterprise_value_yesterday / btc_nav_yesterday if btc_nav_yesterday and enterprise_value_yesterday and btc_nav_yesterday != 0 else None
+        mnav_yesterday = (enterprise_value_yesterday / btc_nav_yesterday) if enterprise_value_yesterday and btc_nav_yesterday and btc_nav_yesterday != 0 else None
         mnav_change_pct = ((mnav - mnav_yesterday) / mnav_yesterday * 100) if mnav and mnav_yesterday and mnav_yesterday != 0 else None
 
         btc_per_share = btc_held / shares_now_out if shares_now_out else None
+
         satoshi_per_share = btc_per_share * 100_000_000 if btc_per_share is not None else None
+
         btc_value_per_share_eur = btc_per_share * btc_price if btc_per_share is not None and btc_price else None
 
         invest_price = sum(entry["btc"] * entry["price"] for entry in btc_history)
+
         btc_gain = btc_nav - invest_price if btc_nav else None
-        btc_torque = btc_nav / invest_price if invest_price and btc_nav and invest_price != 0 else None
+
+        btc_torque = btc_nav / invest_price if invest_price and btc_nav else None
 
         return jsonify({
             "btc_held": btc_held,
@@ -246,8 +252,7 @@ def get_metrics():
         })
 
     except Exception as e:
-        print(f"Unexpected error in get_metrics: {e}")  # Log pour Render
         return jsonify({"error": str(e)}), 500
 
-def get_altbg_fmp_metrics():
+def get_altbg_EOD_metrics():
     return get_metrics()
