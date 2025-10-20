@@ -152,8 +152,8 @@ def get_metrics():
         enterprise_value = market_cap + debt if market_cap else None
         enterprise_value_fully_diluted = market_cap_fully_diluted + debt if market_cap_fully_diluted else None
         
-        mnav = enterprise_value / btc_nav if btc_nav and enterprise_value else None
-        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav and enterprise_value_fully_diluted else None
+        mnav = enterprise_value / btc_nav if btc_nav and enterprise_value and btc_nav != 0 else None
+        mnav_diluted = enterprise_value_fully_diluted / btc_nav if btc_nav and enterprise_value_fully_diluted and btc_nav != 0 else None
 
         # YTD based
         start_of_year = datetime(today.year, 1, 1)
@@ -163,7 +163,7 @@ def get_metrics():
 
         ln_mnav_ytd_based = math.log(mnav) if mnav and mnav > 0 else None
         ln_yield_ytd_based = math.log(1 + daily_yield_ytd_based) if daily_yield_ytd_based else None
-        days_to_cover_ytd_based = ln_mnav_ytd_based / ln_yield_ytd_based if ln_yield_ytd_based and ln_yield_ytd_based != 0 else None
+        days_to_cover_ytd_based = ln_mnav_ytd_based / ln_yield_ytd_based if ln_mnav_ytd_based is not None and ln_yield_ytd_based and ln_yield_ytd_based != 0 else None
         months_to_cover_ytd_based = days_to_cover_ytd_based / 30 if days_to_cover_ytd_based else None
 
         # Q2 based
@@ -172,7 +172,7 @@ def get_metrics():
 
         ln_mnav_q2_based = math.log(mnav) if mnav and mnav > 0 else None
         ln_yield_q2_based = math.log(1 + daily_yield_q2_based)
-        days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_yield_q2_based and ln_yield_q2_based != 0 else None
+        days_to_cover_q2_based = ln_mnav_q2_based / ln_yield_q2_based if ln_mnav_q2_based is not None and ln_yield_q2_based and ln_yield_q2_based != 0 else None
         months_to_cover_q2_based = days_to_cover_q2_based / 30 if days_to_cover_q2_based else None
         
         # Program start
@@ -183,7 +183,7 @@ def get_metrics():
         months_elapsed = today.month - 1 + (1 if today.day >= 1 else 0)
 
         # PCV
-        pcv = (mnav - 1) / months_to_cover_q2_based if months_to_cover_q2_based and months_to_cover_q2_based != 0 else None
+        pcv = (mnav - 1) / months_to_cover_q2_based if mnav is not None and months_to_cover_q2_based and months_to_cover_q2_based != 0 else None
 
         # Price changes
         btc_price_change_pct = ((btc_price - btc_price_yesterday) / btc_price_yesterday * 100) if btc_price_yesterday and btc_price_yesterday != 0 else None
@@ -207,7 +207,7 @@ def get_metrics():
 
         btc_gain = btc_nav - invest_price if btc_nav else None
 
-        btc_torque = btc_nav / invest_price if invest_price and btc_nav else None
+        btc_torque = btc_nav / invest_price if invest_price and btc_nav and invest_price != 0 else None
 
         return jsonify({
             "btc_held": btc_held,
