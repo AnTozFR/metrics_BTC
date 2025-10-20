@@ -5,13 +5,6 @@ from datetime import datetime, timedelta
 import math
 import os
 
-# Assuming this is part of a Flask app; add if needed:
-# app = Flask(__name__)
-# CORS(app)
-# @app.route('/altbg_metrics')
-# def altbg_metrics():
-#     return get_altbg_metrics()
-
 EODHD_API_TOKEN = os.getenv('EODHD_API_TOKEN')
 if not EODHD_API_TOKEN:
     raise ValueError("EODHD_API_TOKEN environment variable is required.")
