@@ -247,5 +247,5 @@ def get_metrics():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def get_altbg_EOD_metrics():
+def get_altbg_eod_metrics():
     return get_metrics()
