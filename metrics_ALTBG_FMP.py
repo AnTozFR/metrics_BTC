@@ -38,13 +38,52 @@ def get_metrics():
     debt_btc = 115_900_000
     debt_fiat = 0
 
-    btc_history = [  # inchangé, abrévié pour brièveté
+    btc_history = [
         {"date": "2024-11-05", "btc": 15, "price": 63729},
-        # ... (ajoute tous les autres si besoin)
+        {"date": "2024-12-04", "btc": 25, "price": 90511},
+        {"date": "2025-03-26", "btc": 580, "price": 81550},
+        {"date": "2025-05-22", "btc": 227, "price": 93518},
+        {"date": "2025-06-02", "btc": 624, "price": 96447},
+        {"date": "2025-06-18", "btc": 182, "price": 93264},
+        {"date": "2025-06-23", "btc": 75, "price": 91792},
+        {"date": "2025-06-30", "btc": 60, "price": 91879},
+        {"date": "2025-07-07", "btc": 116, "price": 92175},
+        {"date": "2025-07-14", "btc": 29, "price": 95225},
+        {"date": "2025-07-21", "btc": 22, "price": 101112},
+        {"date": "2025-07-28", "btc": 58, "price": 102211},
+        {"date": "2025-08-05", "btc": 62, "price": 99889},
+        {"date": "2025-08-11", "btc": 126, "price": 98746},
+        {"date": "2025-09-15", "btc": 48, "price": 98575},
+        {"date": "2025-09-22", "btc": 551, "price": 99272},
+        {"date": "2025-09-29", "btc": 12, "price": 95900},
     ]
 
-    fundraising_data = [  # inchangé
-        # ... (tous les autres)
+    fundraising_data = [
+        {"date": "2024-11-05", "type": "Capital increase", "detail": "BTC strategy launch (0.20€/share)", "montant": 1},
+        {"date": "2024-12-04", "type": "Capital increase", "detail": "Subscription at 0.30€/share", "montant": 2.5},
+        {"date": "2025-03-06", "type": "OCA Tranche 2", "detail": "Fulgur Ventures, Adam Back, UTXO, TOBAM, Ludovic C.-Laurans (0.544€/share)", "montant": 48.6},
+        {"date": "2025-04-07", "type": "BSA 2025-01", "detail": "Free allocation to shareholders (exercise possible at 0.544€)", "montant": 7.3},
+        {"date": "2025-05-09", "type": "Capital increase", "detail": "Subscription at 1.0932€/share", "montant": 9.9},
+        {"date": "2025-05-12", "type": "OCA Tranche 2", "detail": "Adam Back (0.707€/share, 30% premium)", "montant": 12.1},
+        {"date": "2025-05-20", "type": "OCA", "detail": "Private placement + reserved capital increase (1.28€/share)", "montant": 8.6},
+        {"date": "2025-05-26", "type": "OCA Tranche 2 + conversion", "detail": "Fulgur Ventures, UTXO Management, Moonlight Capital, Adam Back", "montant": 63.3},
+        {"date": "2025-06-12", "type": "OCA mixed + conversions", "detail": "TOBAM, Ludovic Chechin Laurans and Adam Back", "montant": 9.7},
+        {"date": "2025-06-17", "type": "ATM Type", "detail": "TOBAM (4.49€/share) - ATM Type #1", "montant": 7.2},
+        {"date": "2025-06-24", "type": "ATM Type", "detail": "TOBAM (5.085€/share) - ATM Type #2", "montant": 4.1},
+        {"date": "2025-07-01", "type": "ATM Type", "detail": "TOBAM (5.251€/share) - ATM Type #3", "montant": 1},
+        {"date": "2025-07-01", "type": "OCA A-04 and B-04 Tranche 1", "detail": "Reserved issuance TOBAM and Adam Back (5.174€/share)", "montant": 10},
+        {"date": "2025-07-08", "type": "ATM Type", "detail": "TOBAM (4.056€/share) - ATM Type #4", "montant": 3},
+        {"date": "2025-07-15", "type": "ATM Type", "detail": "TOBAM (3.95€/share) - ATM Type #5", "montant": 1.1},
+        {"date": "2025-07-15", "type": "Reserved capital increase", "detail": "Adam Back (4.01€/share)", "montant": 5},
+        {"date": "2025-07-21", "type": "ATM Type", "detail": "TOBAM (4.1039€/share) - ATM Type #6", "montant": 1.6},
+        {"date": "2025-07-21", "type": "Reserved capital increase", "detail": "Peak Hodl Ltd (3.4693€/share)", "montant": 8.7},
+        {"date": "2025-08-04", "type": "Capital increase", "detail": "TOBAM Bitcoin Alpha Fund (2.904€/share)", "montant": 5},
+        {"date": "2025-08-04", "type": "OCA A-05 Tranche 1", "detail": "TOBAM Bitcoin Alpha Fund (3.6557€/share)", "montant": 6.5},
+        {"date": "2025-08-18", "type": "Capital increase", "detail": "Adam Back (2.238€/share)", "montant": 2.2},
+        {"date": "2025-09-08", "type": "ATM Type", "detail": "TOBAM (1.72€/share) - ATM Type #7", "montant": 1.8},
+        {"date": "2025-09-08", "type": "Capital increase", "detail": "Fulgur Ventures (0.544€/share, OCA B-01 adjustment)", "montant": 0.7},
+        {"date": "2025-09-08", "type": "Reserved capital increase", "detail": "TOBAM Bitcoin Alpha Fund (1.69€/share)", "montant": 2.5},
+        {"date": "2025-09-20", "type": "Capital increase", "detail": "Private placement at 1.55€/share (58.1 M€) – Capital B – potential acquisition of ~500 BTC", "montant": 58.1},
     ]
 
     capital_data = {  # inchangé
