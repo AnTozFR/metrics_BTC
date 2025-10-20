@@ -268,5 +268,5 @@ def get_metrics():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-def get_altbg_metrics():
+def get_altbg_fmp_metrics():
     return get_metrics()
