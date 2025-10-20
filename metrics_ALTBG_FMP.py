@@ -30,7 +30,6 @@ def fetch_fmp_data(endpoint, params=None):
         return None
 
 def get_metrics():
-    # Données fixes (inchangées)
     shares_fully_diluted = 389_824_422
     btc_held = 2812
     btc_yield_ytd = 1651.2
@@ -86,7 +85,7 @@ def get_metrics():
         {"date": "2025-09-20", "type": "Capital increase", "detail": "Private placement at 1.55€/share (58.1 M€) – Capital B – potential acquisition of ~500 BTC", "montant": 58.1},
     ]
 
-    capital_data = {  # inchangé
+    capital_data = {
         "labels": ["Fulgur Ventures", "Public & Institutional", "Adam Back", "Dirigeants", "TOBAM", "UTXO Management", "Peak Hodl Ltd"],
         "values": [155_588_780, 148_671_191, 37_412_138, 21_873_863, 15_248_681, 8_529_769, 2_500_000]
     }
