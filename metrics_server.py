@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from metrics_ALTBG import get_altbg_metrics
-from metrics_ALTBG_EOP import get_altbg_eop_metrics
+from metrics_ALTBG_EOD import get_altbg_eod_metrics
 from metrics_MSTR import get_mstr_metrics
 from metrics_MTPLF import get_mtplf_metrics
 from metrics_SWC import get_swc_metrics
@@ -14,9 +14,9 @@ CORS(app)
 def altbg():
     return get_altbg_metrics()
 
-@app.route("/altbg_eop")
-def altbg_eop():
-    return get_altbg_eop_metrics()
+@app.route("/altbg_eod")
+def altbg_eod():
+    return get_altbg_eod_metrics()
 
 @app.route("/mtplf")
 def mtplf():
