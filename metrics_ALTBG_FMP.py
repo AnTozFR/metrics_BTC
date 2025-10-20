@@ -13,7 +13,7 @@ import os
 # def altbg_metrics():
 #     return get_altbg_metrics()
 
-FMP_API_KEY = os.getenv('b3eaXRywcSrdYcAVczab6ZRU66ViPMIt')
+FMP_API_KEY = os.getenv('FMP_API_KEY')
 if not FMP_API_KEY:
     raise ValueError("FMP_API_KEY environment variable is required.")
 
