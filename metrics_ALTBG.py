@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 391_030_022
-    btc_held = 2818
-    btc_yield_ytd = 1657
+    shares_fully_diluted = 389_694_528
+    btc_held = 2823
+    btc_yield_ytd = 1658
     q2_yield = 28.1
     debt_btc = 115_900_000
     debt_fiat = 0
@@ -256,6 +256,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
