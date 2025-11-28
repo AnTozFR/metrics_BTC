@@ -32,6 +32,7 @@ def get_metrics():
     {"date": "2025-09-22", "btc": 551, "price": 99272},
     {"date": "2025-09-29", "btc": 12, "price": 95900},
     {"date": "2025-10-20", "btc": 6, "price": 96231},
+    {"date": "2025-11-25", "btc": 5, "price": 88968},
     ]
 
     fundraising_data = [
@@ -255,6 +256,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
