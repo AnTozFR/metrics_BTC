@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 389_694_528
-    btc_held = 2823
-    btc_yield_ytd = 1658
+    shares_fully_diluted = 392_278_260
+    btc_held = 2834
+    btc_yield_ytd = 0.1
     q2_yield = 28.1
     debt_btc = 115_900_000
     debt_fiat = 0
@@ -33,6 +33,8 @@ def get_metrics():
     {"date": "2025-09-29", "btc": 12, "price": 95900},
     {"date": "2025-10-20", "btc": 6, "price": 96231},
     {"date": "2025-11-25", "btc": 5, "price": 88968},
+    {"date": "2026-02-09", "btc": 5, "price": 64124},
+    {"date": "2026-02-16", "btc": 6, "price": 55270},
     ]
 
     fundraising_data = [
@@ -256,6 +258,7 @@ def get_metrics():
 
 def get_altbg_metrics():
     return get_metrics()
+
 
 
 
