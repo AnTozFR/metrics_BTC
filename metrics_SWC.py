@@ -7,8 +7,8 @@ import math
 def get_metrics():
     # Données fixes
     shares_basics = 292_740_644
-    shares_fully_diluted = 390_551_479
-    btc_held = 2664
+    shares_fully_diluted = 397_112_894
+    btc_held = 2689
     btc_yield_ytd = 57718
     q2_yield = 204.9
     debt_btc = 157230000
@@ -42,6 +42,8 @@ def get_metrics():
         ("2025-10-13",100.00,90764,2650.00),
         ("2025-10-21",10.00,83258,2660.00),
         ("2025-11-04",4.00,82763,2664.00),
+        ("2025-11-04",10.00,67210,2674.00),
+        ("2025-11-04",15.00,52385,2689.00),
     ]
     
     prev_total = 0
