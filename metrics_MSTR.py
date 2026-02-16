@@ -6,12 +6,12 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 362_606_000
-    btc_held = 713502
+    shares_fully_diluted = 365_461_000
+    btc_held = 714644
     btc_yield_ytd = 0.3
     q2_yield = 5.2
     debt_btc = 0
-    debt_fiat = 16_603_000_000
+    debt_fiat = 16_597_000_000
 
     btc_history = [
     {"date": "2020-08-10", "btc": 21454, "price": 11652},
@@ -110,6 +110,7 @@ def get_metrics():
     {"date": "2026-01-20", "btc": 22305,   "price": 95284},
     {"date": "2026-01-26", "btc": 2905,   "price": 90061},
     {"date": "2026-02-02", "btc": 855,   "price": 87974},
+    {"date": "2026-02-09", "btc": 1142,   "price": 78815},
     ]
 
     try:
@@ -277,6 +278,7 @@ def get_metrics():
 
 def get_mstr_metrics():
     return get_metrics()
+
 
 
 
