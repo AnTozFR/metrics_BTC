@@ -6,9 +6,9 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 392_478_260
-    btc_held = 2836
-    btc_yield_ytd = 0.21
+    shares_fully_diluted = 397_686_652
+    btc_held = 2888
+    btc_yield_ytd = 0.72
     q2_yield = 28.1
     debt_btc = 115_900_000
     debt_fiat = 0
@@ -36,6 +36,8 @@ def get_metrics():
     {"date": "2026-02-09", "btc": 5, "price": 64124},
     {"date": "2026-02-16", "btc": 6, "price": 55270},
     {"date": "2026-03-09", "btc": 2, "price": 61660},
+    {"date": "2026-03-16", "btc": 8, "price": 60934},
+    {"date": "2026-03-23", "btc": 44, "price": 61763},
     ]
 
     fundraising_data = [
