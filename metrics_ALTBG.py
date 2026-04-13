@@ -6,7 +6,7 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 397_686_652
+    shares_fully_diluted = 397_622_899
     btc_held = 2925
     btc_yield_ytd = 1.3
     q2_yield = 28.1
@@ -80,12 +80,12 @@ def get_metrics():
             "Peak Hodl Ltd"
         ],
         "values": [
-            155_588_780,
-            149_869_420,
-            37_412_138,
-            22_030_111,
-            16_548_044,
-            8_529_767,
+            151_107_221,
+            161_896_852,
+            38_548_400,
+            22_428_671,
+            16_897_277,
+            4_244_478,
             2_500_000
         ]
     }
