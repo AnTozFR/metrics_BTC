@@ -71,7 +71,7 @@ def get_metrics():
 
     capital_data = {
         "labels": [
-            "Fulgur Ventures",
+            "Blockstream Capital Partners",
             "Public & Institutional",
             "Adam Back",
             "Dirigeants",
