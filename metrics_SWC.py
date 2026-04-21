@@ -8,7 +8,7 @@ def get_metrics():
     # Données fixes
     shares_basics = 292_740_644
     shares_fully_diluted = 399_040_062
-    btc_held = 2695
+    btc_held = 2706
     btc_yield_ytd = 0
     q2_yield = 204.9
     debt_btc = 157230000
@@ -46,6 +46,7 @@ def get_metrics():
         ("2026-02-11",15.00,52385,2689.00),
         ("2026-03-02",3.00,47871,2692.00),
         ("2026-03-10",3.00,48764,2695.00),
+        ("2026-04-14",11.00,53901,2706.00),
     ]
     
     prev_total = 0
