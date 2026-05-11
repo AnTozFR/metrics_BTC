@@ -14,25 +14,13 @@ CORS(app)
 def altbg():
     return get_altbg_metrics()
 
-@app.route("/altbg_eod")
-def altbg_eod():
-    return get_altbg_eod_metrics()
-
 @app.route("/mtplf")
 def mtplf():
     return get_mtplf_metrics()
 
-@app.route("/swc")
-def swc():
-    return get_swc_metrics()
-
 @app.route("/mstr")
 def mstr():
     return get_mstr_metrics()
-
-@app.route("/h100")
-def h100():
-    return get_h100_metrics()
 
 if __name__ == '__main__':
     app.run(debug=True)
