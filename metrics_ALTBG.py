@@ -6,10 +6,10 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 421_263_881
-    btc_held = 3139
-    btc_yield_ytd = 1.85
-    q2_yield = 28.1
+    shares_fully_diluted = 420_877_821
+    btc_held = 3145
+    btc_yield_ytd = 2.1
+    q2_yield = 1.1
     debt_btc = 115_900_000
     debt_fiat = 0
 
@@ -43,6 +43,8 @@ def get_metrics():
     {"date": "2026-04-27", "btc": 6, "price": 66951},
     {"date": "2026-05-18", "btc": 192, "price": 67866},
     {"date": "2026-06-01", "btc": 4, "price": 64989},
+    {"date": "2026-08-03", "btc": 1, "price": 56061},
+    {"date": "2026-08-17", "btc": 5, "price": 55882},
     ]
 
     fundraising_data = [
@@ -71,6 +73,9 @@ def get_metrics():
         {"date": "2025-09-08", "type": "Capital increase", "detail": "Fulgur Ventures (0.544€/share, OCA B-01 adjustment)", "montant": 0.7},
         {"date": "2025-09-08", "type": "Reserved capital increase", "detail": "TOBAM Bitcoin Alpha Fund (1.69€/share)", "montant": 2.5},
         {"date": "2025-09-20", "type": "Capital increase", "detail": "Private placement at 1.55€/share (58.1 M€) – Capital B – potential acquisition of ~500 BTC", "montant": 58.1},
+        {"date": "2026-05-11", "type": "ABSA (Capital increase + BSA)", "detail": "International institutional investors incl. Adam Back and TOBAM (0.66€/ABSA) - Maxim Group LLC lead placement agent, Marex S.A. co-manager", "montant": 15.2},
+        {"date": "2026-08-28", "type": "ABSA (Capital increase + BSA)", "detail": "International institutional investors incl. Adam Back and TOBAM (0.58€/ABSA) - Maxim Group LLC sole placement agent", "montant": 21.0},
+        {"date": "2026-09-02", "type": "ABSA (Capital increase + BSA)", "detail": "Adam Back strategic investor (0.58€/ABSA), same terms as 28 Aug 2026 operation", "montant": 7.6},
     ]
 
     capital_data = {
@@ -84,11 +89,11 @@ def get_metrics():
             "Peak Hodl Ltd"
         ],
         "values": [
-            151_107_221,
-            159_425_347,
-            38_548_400,
-            22_428_671,
-            16_595_071,
+            149_972_415,
+            181_314_668,
+            42_094_425,
+            22_992_443,
+            17_759_392,
             4_244_478,
             2_500_000
         ]
