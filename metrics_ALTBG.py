@@ -75,7 +75,7 @@ def get_metrics():
         {"date": "2025-09-20", "type": "Capital increase", "detail": "Private placement at 1.55€/share (58.1 M€) – Capital B – potential acquisition of ~500 BTC", "montant": 58.1},
         {"date": "2026-05-11", "type": "Capital increase", "detail": "International institutional investors incl. Adam Back and TOBAM (0.66€/ABSA) - Maxim Group LLC lead placement agent, Marex S.A. co-manager", "montant": 15.2},
         {"date": "2026-08-28", "type": "Capital increase", "detail": "International institutional investors incl. Adam Back and TOBAM (0.58€/ABSA) - Maxim Group LLC sole placement agent", "montant": 21.0},
-        {"date": "2026-09-02", "type": "Capital increase "detail": "Adam Back strategic investor (0.58€/ABSA), same terms as 28 Aug 2026 operation", "montant": 7.6},
+        {"date": "2026-09-02", "type": "Capital increase", "detail": "Adam Back strategic investor (0.58€/ABSA), same terms as 28 Aug 2026 operation", "montant": 7.6},
     ]
 
     capital_data = {
