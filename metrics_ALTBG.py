@@ -82,21 +82,19 @@ def get_metrics():
     capital_data = {
         "labels": [
             "Blockstream Capital Partners",
-            "Public & Institutional",
+            "Public & Institutionnel",
             "Adam Back",
             "Dirigeants",
             "TOBAM",
-            "UTXO Management",
-            "Peak Hodl Ltd"
+            "UTXO Management"
         ],
         "values": [
-            149_972_415,
-            181_314_668,
-            42_094_425,
-            22_992_443,
-            17_759_392,
-            4_244_478,
-            2_500_000
+            71_805_804,
+            205_657_804,
+            67_485_900,
+            21_219_800,
+            12_092_254,
+            4_244_478
         ]
     }
 
