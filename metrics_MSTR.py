@@ -6,12 +6,12 @@ import math
 
 def get_metrics():
     # Données fixes
-    shares_fully_diluted = 424_479_000
-    btc_held = 845050
+    shares_fully_diluted = 431_528_000
+    btc_held = 848250
     btc_yield_ytd = 3.7
-    q2_yield = 11.8
+    q2_yield = 5
     debt_btc = 0
-    debt_fiat = 21_517_000_000
+    debt_fiat = 20_462_000_000
 
     btc_history = [
     {"date": "2020-08-10", "btc": 21454, "price": 11652},
@@ -128,10 +128,14 @@ def get_metrics():
     {"date": "2026-06-15", "btc": 1587,   "price": 63024},
     {"date": "2026-06-22", "btc": 520,   "price": 67068},
     {"date": "2026-06-30", "btc": -1363,   "price": 59256},
-    {"date": "2026-07-06", "btc": -2225,   "price": 90773},
+    {"date": "2026-07-06", "btc": -2225,   "price": 60773},
     {"date": "2026-08-03", "btc": -1638,   "price": 63957},
     {"date": "2026-08-10", "btc": -1690,   "price": 64262},
-    {"date": "2026-08-31", "btc": 4603,   "price": 90318},
+    {"date": "2026-08-31", "btc": 4603,   "price": 80318},
+    {"date": "2026-09-21", "btc": 950,   "price": 79670},
+    {"date": "2026-09-28", "btc": 1665,   "price": 85681},
+    {"date": "2026-10-05", "btc": 334,   "price": 85839},
+    {"date": "2026-10-12", "btc": 250,   "price": 86194},
     ]
 
     try:
